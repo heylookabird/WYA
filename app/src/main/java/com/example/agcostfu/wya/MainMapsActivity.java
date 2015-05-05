@@ -5,11 +5,14 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.agcostfu.main.Main;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -49,6 +52,8 @@ public class MainMapsActivity extends ActionBarActivity {
     double radius = 5.0;
     double lat;
     double lng;
+    boolean inGroup;
+
 
     static TextView textView = null;
     @Override
@@ -186,8 +191,42 @@ public class MainMapsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main_maps, menu);
-        return super.onCreateOptionsMenu(menu);
+        if(inGroup){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_main_maps, menu);
+            return super.onCreateOptionsMenu(menu);
+        }else{
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.group_menu_map, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        //Creates a new Group and Activity
+        switch (item.getItemId()){
+            case R.id.action_create_group:
+               //enter a group name
+
+               //enter a username
+               //render group menu options
+               //render group map
+
+            case R.id.action_settings:
+                Intent settings = new Intent(MainMapsActivity.this, Settings.class);
+                MainMapsActivity.this.startActivity(settings);
+                return true;
+
+            case R.id.action_chat:
+                //enter chat activity
+                Intent chat = new Intent(MainMapsActivity.this, Chat.class);
+                MainMapsActivity.this.startActivity(chat);
+                //text field to input to chat.
+
+                //send button
+                return true;
+        }
+
     }
 }
