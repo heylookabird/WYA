@@ -1,46 +1,25 @@
 package com.example.agcostfu.wya;
 
-import android.annotation.TargetApi;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 
-import com.example.agcostfu.main.Main;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
 import static com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.content.Context;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.lang.String;
-
-import com.example.agcostfu.wya.GPSTracker;
-import  com.example.agcostfu.wya.Location;
-import com.example.agcostfu.wya.SplashScreen;
-
-
 
 
 public class MainMapsActivity extends ActionBarActivity {
@@ -66,8 +45,6 @@ public class MainMapsActivity extends ActionBarActivity {
         lng = gps.getLocation().getLongitude();
 
 
-
-        //setUpMap();
         setUpMapIfNeeded();
     }
 
@@ -212,6 +189,7 @@ public class MainMapsActivity extends ActionBarActivity {
                //enter a username
                //render group menu options
                //render group map
+                return true;
 
             case R.id.action_settings:
                 Intent settings = new Intent(MainMapsActivity.this, Settings.class);
@@ -219,14 +197,22 @@ public class MainMapsActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_chat:
+                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
+                MainMapsActivity.this.startActivity(chat);
+                return true;
+
+
+
+
+            /*case R.id.action_chat:
                 //enter chat activity
-                Intent chat = new Intent(MainMapsActivity.this, Chat.class);
+                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
                 MainMapsActivity.this.startActivity(chat);
                 //text field to input to chat.
 
-                //send button
-                return true;
-        }
+                //send button*/
 
+        }
+        return true;
     }
 }

@@ -1,18 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!-- Chat within a group -->
-    <item android:id="@+id/action_create_group"
-        android:icon="@drawable/ic_action_new"
+    <!-- Chat with Group -->
+    <item
+        android:id="@+id/action_chat"
+        android:icon="@drawable/ic_action_new_email"
         android:title="Chat"
         app:showAsAction="always"/>
-    <!-- Invite to Group -->
-    <item
-        android:id="@+id/action_invite_to_group"
-        android:icon="@drawable/ic_action_add_group"
-        android:title="Invite to Group"
-        app:showAsAction="always"/>
 
-    <!-- Leave Group -->
+    <!-- Settings-->
     <item android:id="@+id/action_settings"
         android:title="@string/Settings"
         app:showAsAction="never" />
