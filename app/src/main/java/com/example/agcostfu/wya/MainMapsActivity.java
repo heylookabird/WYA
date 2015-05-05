@@ -54,19 +54,22 @@ public class MainMapsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_maps);
-        //SplashScreen splash = new SplashScreen();
+        setContentView(R.layout.fragmap_activity);
+        SplashScreen splash = new SplashScreen();
         gps = new GPSTracker(MainMapsActivity.this);
         lat = gps.getLocation().getLatitude();
         lng = gps.getLocation().getLongitude();
 
+
+
+        //setUpMap();
         setUpMapIfNeeded();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
     }
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -87,8 +90,12 @@ public class MainMapsActivity extends ActionBarActivity {
 // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
 // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+           //try{
+               mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.the_map))
+                       .getMap();
+          // }catch(Exception e){
+               //e.printStackTrace();
+           //}
 // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();

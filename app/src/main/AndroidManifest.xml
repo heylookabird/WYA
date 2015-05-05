@@ -28,13 +28,24 @@
             android:value="AIzaSyDlThyE_9riMLt24un2QwhZoWrU5Q7lqoo" />
         <activity
             android:name=".MainMapsActivity"
-            android:label="@string/WhereYouAt" >
+            android:label="@string/Map" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".SplashScreen"
+            android:label="@string/WhereYouAt">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
     </application>
 
 </manifest>

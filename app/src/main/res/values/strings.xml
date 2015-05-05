@@ -3,4 +3,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="WhereYouAt">whereyouat</string>
+    <string name="Map">map</string>
 </resources>
