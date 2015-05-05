@@ -1,22 +1,27 @@
 package com.example.agcostfu.wya;
 
 import android.annotation.TargetApi;
+import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+
 import com.example.agcostfu.server.CreateGroupClient;
 import com.example.agcostfu.server.GetGroupLocationClient;
 import com.example.agcostfu.server.InviteClient;
 import com.example.agcostfu.server.UpdatingClient;
 import com.example.agcostfu.users.User;
+
+import com.example.agcostfu.main.Main;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -39,6 +44,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
+import java.util.StringTokenizer;
 
 import com.example.agcostfu.wya.GPSTracker;
 import  com.example.agcostfu.wya.Location;
@@ -56,8 +62,12 @@ public class MainMapsActivity extends ActionBarActivity {
     double radius = 5.0;
     double lat;
     double lng;
+
     Handler updateHandler;
     String number;
+
+    boolean inGroup;
+
 
 
     static TextView textView = null;
@@ -66,33 +76,44 @@ public class MainMapsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragmap_activity);
         SplashScreen splash = new SplashScreen();
+        enableStrictMode();
         gps = new GPSTracker(MainMapsActivity.this);
         lat = gps.getLocation().getLatitude();
         lng = gps.getLocation().getLongitude();
         updateHandler = new Handler();
         TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         number = tm.getLine1Number();
+        System.out.println(number);
         test();
         //setUpMap();
         setUpMapIfNeeded();
         startPeriodicUpdate();
-    }
+        mMap.getMyLocation();
 
-    private void test(){
         String name = "test";
 
-        User user = new User();
-        user.setUsername(name);
-        user.setPhoneNumber(number);
 
         new CreateGroupClient("Group", number, name);
         new InviteClient(number, "" + 1234);
         new InviteClient(number, "" + 1111);
+        inGroup = true;
+    }
+
+    public void enableStrictMode()
+    {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+    }
+
+
+    private void test(){
+
     }
     @Override
     protected void onResume() {
         super.onResume();
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
     }
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -134,9 +155,13 @@ public class MainMapsActivity extends ActionBarActivity {
         @Override
         public void run(){
             new UpdatingClient(number, gps.getLocation().getLongitude(), gps.getLocation().getLongitude());
-            String info = new GetGroupLocationClient(number).getInfoFromRequest();
-            setUpMap(info);
-            updateHandler.postDelayed(update, 50000000);
+            //if(inGroup) {
+                String info = new GetGroupLocationClient(number).getInfoFromRequest();
+                setUpMap(info);
+         /*   }else
+                setUpMap();*/
+
+            updateHandler.postDelayed(update, 1000);
         }
     };
 
@@ -150,58 +175,87 @@ public class MainMapsActivity extends ActionBarActivity {
         String curr = "";
         int in = 0;
         String userinfo[] = new String[4];
-        for(int i = 0; i < users.length(); i++){
+        StringTokenizer tokenizer= new StringTokenizer(users);
+
+
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(gps.getLocation().getLongitude(), gps.getLocation().getLatitude()))
+                .title("USER 1")
+                .snippet("This is User 1's current location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+        try{
+            int tokens = 0;
+            //4 tokens per user
+            while(tokenizer.hasMoreTokens()){
+                String name =tokenizer.nextToken();
+                String number = tokenizer.nextToken();
+                double lo = Double.parseDouble(tokenizer.nextToken());
+                double la = Double.parseDouble(tokenizer.nextToken());
+
+                User user = new User();
+                user.setUsername(name);
+                user.setPhoneNumber(number);
+                user.setWorldPoint(lo, la);
+
+                group.add(user);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+       /* for(int i = 0; i < users.length(); i++){
             if(users.charAt(i) != ','){
                 curr = curr + users.charAt(i);
             }else if(users.charAt(i) == '\n'){
                 User user = new User();
                 user.setUsername(userinfo[0]);
                 user.setPhoneNumber(userinfo[1]);
+                System.out.println(userinfo[0] +": " + userinfo[2] + ", " + userinfo[3]);
                user.setWorldPoint(Double.parseDouble(userinfo[2]), Double.parseDouble(userinfo[3]));
                 group.add(user);
+
+                if(in == 4)
+                    break;
             }else{
-                userinfo[in] = curr;
+                String temp = curr;
+                userinfo[in] = temp;
                 curr = "";
                 in++;
+
             }
-        }
+        }*/
 
         LatLng current = new LatLng(gps.getLocation().getLongitude(), gps.getLocation().getLatitude());
 
         for(int i = 0; i < group.size(); i++){
             User user = group.get(i);
             LatLng lat = new LatLng(user.getLong(), user.getLat());
-            mMap.addMarker(new MarkerOptions().position(lat).title(user.getUserName()).snippet(user.getPhoneNumber()));
+            mMap.addMarker(new MarkerOptions().position(lat).title(user.getUserName()).snippet(user.getPhoneNumber()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
         }
 
-            mMap.getMyLocation();
+            //mMap.getMyLocation();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
     }
     private void setUpMap() {
         LatLng current = new LatLng(gps.getLocation().getLatitude(),gps.getLocation().getLongitude());
 
-        mMap.addMarker(new MarkerOptions()
-                .position(current)
-                .title("USER 1")
-                .snippet("This is User 1's current location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
 
         mMap.setMyLocationEnabled(true);
+
+      /*  mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(-130, -120))
+                .title("USER 1")
+                .snippet("This is User 1's current location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));*/
         //this sets the view of the map zoomed such that the user's current
         //location and the second users location is visible.
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));
 
-        mMap.getMyLocation();
+      ;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         // This addMarker sets the location of the second User in Downtown SF.
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(37.773972, -122.431297))
-                .title("USER 2")
-                .snippet("This is User 2's Current Position.")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-        Toast.makeText(getApplicationContext(),
-                "WELCOME!",
-                Toast.LENGTH_LONG).show();
 
         // This set the function for long press on the map.
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
@@ -256,9 +310,45 @@ public class MainMapsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main_maps, menu);
-        return super.onCreateOptionsMenu(menu);
+        if(inGroup){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_main_maps, menu);
+            return super.onCreateOptionsMenu(menu);
+        }else{
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.group_menu_map, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        //Creates a new Group and Activity
+        switch (item.getItemId()){
+            case R.id.action_create_group:
+               //enter a group name
+
+               //enter a username
+               //render group menu options
+               //render group map
+
+            case R.id.action_settings:
+                Intent settings = new Intent(MainMapsActivity.this, Settings.class);
+                MainMapsActivity.this.startActivity(settings);
+                return true;
+
+            /*case R.id.action_chat:
+                //enter chat activity
+                Intent chat = new Intent(MainMapsActivity.this, Chat.class);
+                MainMapsActivity.this.startActivity(chat);
+                //text field to input to chat.
+
+                //send button
+                return true;*/
+        }
+
+       return false;
+
     }
 
 

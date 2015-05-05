@@ -55,8 +55,8 @@ public class Group {
 		ArrayList<String> info = new ArrayList<String>();
 		for (int i = 0; i < g.members.size(); i++) {
 			User u = g.members.get(i);
-			info.add(u.getUserName() + ", " + u.getPhoneNumber() + ", "
-					+ u.getLong() + ", " + u.getLat());
+			info.add(u.getUserName() + " " + u.getPhoneNumber() + " "
+					+ u.getLong() + " " + u.getLat());
 		}
 		return info;
 	}

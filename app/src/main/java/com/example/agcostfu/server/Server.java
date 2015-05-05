@@ -286,6 +286,15 @@ public class Server {
 	public static Group makeNewGroup(String groupname, String adminName,
 			String adminNum) {
 		Group g = new Group(groupname, adminName, adminNum, ""+n);
+
+        for(int i =0; i < activeGroups.size(); i++){
+            for(int j = 0; j < activeGroups.get(i).size(); j++) {
+                if (activeGroups.get(i).getUser(j).getPhoneNumber().startsWith(adminNum)){
+                    return g;
+                }
+
+            }
+        }
 		addGroup(g);
 		n++;
 
