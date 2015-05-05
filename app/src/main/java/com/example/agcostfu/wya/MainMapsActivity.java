@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
 import static com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.content.Context;
