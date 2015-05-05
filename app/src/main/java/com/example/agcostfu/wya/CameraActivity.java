@@ -52,11 +52,15 @@ public class CameraActivity extends ActionBarActivity {
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
+                String imageName = "temp";
+                File out;
                 if (options[item].equals("Take Photo"))
                 {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+                    out = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    //saving to external storage
+                    out = new File(out, imageName);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(out));
                     startActivityForResult(intent, 1);
                 }
                 else if (options[item].equals("Choose from Gallery"))
@@ -106,6 +110,11 @@ public class CameraActivity extends ActionBarActivity {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
                         outFile.flush();
                         outFile.close();
+                        //adding intent to new activity to add title and add thumbnail to
+                        //location of the user at current Lat,Lng
+                        Intent addImg = new Intent(CameraActivity.this, AddImage.class);
+                        CameraActivity.this.startActivity(addImg);
+
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -128,6 +137,11 @@ public class CameraActivity extends ActionBarActivity {
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
                 Log.w("", picturePath + "");
                 viewImage.setImageBitmap(thumbnail);
+
+                //adding intent to new activity to add title and add thumbnail to
+                //location of the user at current Lat,Lng
+                Intent addImg = new Intent(CameraActivity.this, AddImage.class);
+                CameraActivity.this.startActivity(addImg);
             }
         }
     }

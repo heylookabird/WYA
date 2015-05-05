@@ -74,5 +74,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.agcostfu.wya.MainMapsActivity" />
         </activity>
+        <activity
+            android:name=".AddImage"
+            android:label="@string/title_activity_add_image"
+            android:parentActivityName=".CameraActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.agcostfu.wya.CameraActivity" />
+        </activity>
     </application>
+
 </manifest>
