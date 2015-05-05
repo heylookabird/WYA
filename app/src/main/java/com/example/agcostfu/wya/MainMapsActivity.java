@@ -367,19 +367,10 @@ public class MainMapsActivity extends ActionBarActivity {
                 MainMapsActivity.this.startActivity(chat);
                 return true;
 
-
-
-
-
-            /*case R.id.action_chat:
-                //enter chat activity
-                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
-                MainMapsActivity.this.startActivity(chat);
-                //text field to input to chat.
-
-
-                //send button
-                return true;*/
+            case R.id.action_camera:
+                Intent camera = new Intent(MainMapsActivity.this, CameraActivity.class);
+                MainMapsActivity.this.startActivity(camera);
+                return true;
         }
 
         return false;

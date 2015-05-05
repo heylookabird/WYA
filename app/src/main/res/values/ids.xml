@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="action_chat" type="id">action_chat</item>
+    <item name="action_camera" type="id">action_camera</item>
 </resources>
