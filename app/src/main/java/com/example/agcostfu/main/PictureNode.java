@@ -1,13 +1,13 @@
 package com.example.agcostfu.main;
 
-import java.awt.image.BufferedImage;
+//import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 
-import javax.imageio.ImageIO;
+//import javax.imageio.ImageIO;
 
 public class PictureNode {
 	double longitude, latitude;
-	BufferedImage image;
+	//BufferedImage image;
 	String poster;
 	String chat;
 	String title;
@@ -24,7 +24,7 @@ public class PictureNode {
 		}*/
 	}
 	
-	public PictureNode(BufferedImage image, String user, String title, double lon, double lat){
+	/*public PictureNode(BufferedImage image, String user, String title, double lon, double lat){
 		this.image = image;
 		setTitle(title);
 		poster = user;
@@ -36,7 +36,7 @@ public class PictureNode {
 	public BufferedImage getImage(){
 		return image;
 	}
-	
+	*/
 	public void setTitle(String title){
 		this.title = title;
 	}

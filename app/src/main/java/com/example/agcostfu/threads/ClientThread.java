@@ -108,7 +108,7 @@ public class ClientThread implements Runnable {
 	
 
 	private void sendPhotoToServer(String fileloc, String originnum, String chat, String lon, String lat) {
-		try {
+	/*	try {
 			int i;
 			FileInputStream fis = new FileInputStream(fileloc);
 			DataOutputStream os = new DataOutputStream(tSocket.getOutputStream());
@@ -123,7 +123,7 @@ public class ClientThread implements Runnable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 }
