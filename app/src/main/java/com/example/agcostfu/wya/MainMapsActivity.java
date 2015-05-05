@@ -3,6 +3,7 @@ package com.example.agcostfu.wya;
 import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.Toast;
@@ -10,6 +11,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.example.agcostfu.server.CreateGroupClient;
+import com.example.agcostfu.server.GetGroupLocationClient;
+import com.example.agcostfu.server.InviteClient;
+import com.example.agcostfu.server.UpdatingClient;
+import com.example.agcostfu.users.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -49,6 +56,9 @@ public class MainMapsActivity extends ActionBarActivity {
     double radius = 5.0;
     double lat;
     double lng;
+    Handler updateHandler;
+    String number;
+
 
     static TextView textView = null;
     @Override
@@ -59,13 +69,26 @@ public class MainMapsActivity extends ActionBarActivity {
         gps = new GPSTracker(MainMapsActivity.this);
         lat = gps.getLocation().getLatitude();
         lng = gps.getLocation().getLongitude();
-
-
-
+        updateHandler = new Handler();
+        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        number = tm.getLine1Number();
+        test();
         //setUpMap();
         setUpMapIfNeeded();
+        startPeriodicUpdate();
     }
 
+    private void test(){
+        String name = "test";
+
+        User user = new User();
+        user.setUsername(name);
+        user.setPhoneNumber(number);
+
+        new CreateGroupClient("Group", number, name);
+        new InviteClient(number, "" + 1234);
+        new InviteClient(number, "" + 1111);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -103,10 +126,57 @@ public class MainMapsActivity extends ActionBarActivity {
         }
     }
 
+    private void startPeriodicUpdate(){
+        updateHandler.post(update);
+    }
+
+    private Runnable update = new Runnable(){
+        @Override
+        public void run(){
+            new UpdatingClient(number, gps.getLocation().getLongitude(), gps.getLocation().getLongitude());
+            String info = new GetGroupLocationClient(number).getInfoFromRequest();
+            setUpMap(info);
+            updateHandler.postDelayed(update, 50000000);
+        }
+    };
+
     /**
      * This is where we can add markers or lines, add listeners or move the camera
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
+
+    private void setUpMap(String users){
+        ArrayList<User> group = new ArrayList<User>();
+        String curr = "";
+        int in = 0;
+        String userinfo[] = new String[4];
+        for(int i = 0; i < users.length(); i++){
+            if(users.charAt(i) != ','){
+                curr = curr + users.charAt(i);
+            }else if(users.charAt(i) == '\n'){
+                User user = new User();
+                user.setUsername(userinfo[0]);
+                user.setPhoneNumber(userinfo[1]);
+               user.setWorldPoint(Double.parseDouble(userinfo[2]), Double.parseDouble(userinfo[3]));
+                group.add(user);
+            }else{
+                userinfo[in] = curr;
+                curr = "";
+                in++;
+            }
+        }
+
+        LatLng current = new LatLng(gps.getLocation().getLongitude(), gps.getLocation().getLatitude());
+
+        for(int i = 0; i < group.size(); i++){
+            User user = group.get(i);
+            LatLng lat = new LatLng(user.getLong(), user.getLat());
+            mMap.addMarker(new MarkerOptions().position(lat).title(user.getUserName()).snippet(user.getPhoneNumber()));
+        }
+
+            mMap.getMyLocation();
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
+    }
     private void setUpMap() {
         LatLng current = new LatLng(gps.getLocation().getLatitude(),gps.getLocation().getLongitude());
 
@@ -190,4 +260,12 @@ public class MainMapsActivity extends ActionBarActivity {
         inflater.inflate(R.menu.menu_main_maps, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+
+
+
+
+
+
+
 }
