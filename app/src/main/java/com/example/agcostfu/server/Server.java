@@ -62,8 +62,8 @@ public class Server {
 	}
 
 	public static void invokeAction(Socket s, String call,
-			String number, String username, String gname, String lon,
-			String lat, PictureNode node) throws Exception {
+			String number, String username, String gname, String lat,
+			String lon, PictureNode node) throws Exception {
 		PrintWriter clientout = new PrintWriter(s.getOutputStream(), true);
 
 		System.out.println("Action invoked " + call);
@@ -254,11 +254,11 @@ public class Server {
 		return numbers;
 	}
 
-	public static boolean userUpdate(String number, String lon, String lat) {
+	public static boolean userUpdate(String number, String lat, String lon) {
 		User found = searchForUser(number);
 		if (found != null)
-			found.setWorldPoint(Double.parseDouble(lon),
-					Double.parseDouble(lat));
+			found.setWorldPoint(Double.parseDouble(lat),
+					Double.parseDouble(lon));
 
 		return found != null;
 	}

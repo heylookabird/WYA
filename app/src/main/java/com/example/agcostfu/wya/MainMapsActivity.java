@@ -1,6 +1,9 @@
 package com.example.agcostfu.wya;
 
+
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,13 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 
 
 import com.example.agcostfu.server.CreateGroupClient;
+import com.example.agcostfu.server.GetGroupChatClient;
 import com.example.agcostfu.server.GetGroupLocationClient;
 import com.example.agcostfu.server.InviteClient;
 import com.example.agcostfu.server.UpdatingClient;
@@ -24,33 +25,28 @@ import com.example.agcostfu.users.User;
 import com.example.agcostfu.main.Main;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
-import static com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import android.os.Bundle;
+import static com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+
 import android.support.v7.app.ActionBarActivity;
-import android.content.Context;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 import java.util.StringTokenizer;
 
 import com.example.agcostfu.wya.GPSTracker;
-import  com.example.agcostfu.wya.Location;
+import com.example.agcostfu.wya.Location;
 import com.example.agcostfu.wya.SplashScreen;
 
 
+import java.lang.String;
 
 
 public class MainMapsActivity extends ActionBarActivity {
@@ -69,8 +65,8 @@ public class MainMapsActivity extends ActionBarActivity {
     boolean inGroup;
 
 
-
     static TextView textView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +77,7 @@ public class MainMapsActivity extends ActionBarActivity {
         lat = gps.getLocation().getLatitude();
         lng = gps.getLocation().getLongitude();
         updateHandler = new Handler();
-        TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         number = tm.getLine1Number();
         System.out.println(number);
         test();
@@ -92,29 +88,31 @@ public class MainMapsActivity extends ActionBarActivity {
 
         String name = "test";
 
-
         new CreateGroupClient("Group", number, name);
         new InviteClient(number, "" + 1234);
         new InviteClient(number, "" + 1111);
         inGroup = true;
+
+        setUpMapIfNeeded();
     }
 
-    public void enableStrictMode()
-    {
+    public void enableStrictMode() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
     }
 
 
-    private void test(){
+    private void test() {
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
     }
+
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -134,12 +132,12 @@ public class MainMapsActivity extends ActionBarActivity {
 // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
 // Try to obtain the map from the SupportMapFragment.
-           //try{
-               mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.the_map))
-                       .getMap();
-          // }catch(Exception e){
-               //e.printStackTrace();
-           //}
+            //try{
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.the_map))
+                    .getMap();
+            // }catch(Exception e){
+            //e.printStackTrace();
+            //}
 // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -147,21 +145,22 @@ public class MainMapsActivity extends ActionBarActivity {
         }
     }
 
-    private void startPeriodicUpdate(){
+    private void startPeriodicUpdate() {
         updateHandler.post(update);
     }
 
-    private Runnable update = new Runnable(){
+    private Runnable update = new Runnable() {
         @Override
-        public void run(){
-            new UpdatingClient(number, gps.getLocation().getLongitude(), gps.getLocation().getLongitude());
+        public void run() {
+            new UpdatingClient(number, gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
             //if(inGroup) {
-                String info = new GetGroupLocationClient(number).getInfoFromRequest();
-                setUpMap(info);
+            String info = new GetGroupLocationClient(number).getInfoFromRequest();
+            mMap.clear();
+            setUpMap(info);
          /*   }else
                 setUpMap();*/
 
-            updateHandler.postDelayed(update, 1000);
+            updateHandler.postDelayed(update, 5000);
         }
     };
 
@@ -170,37 +169,37 @@ public class MainMapsActivity extends ActionBarActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
 
-    private void setUpMap(String users){
+    private void setUpMap(String users) {
         ArrayList<User> group = new ArrayList<User>();
         String curr = "";
         int in = 0;
         String userinfo[] = new String[4];
-        StringTokenizer tokenizer= new StringTokenizer(users);
-
+        StringTokenizer tokenizer = new StringTokenizer(users);
+        System.out.println("TOKENIZERS: " + users);
 
         mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(gps.getLocation().getLongitude(), gps.getLocation().getLatitude()))
+                .position(new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude()))
                 .title("USER 1")
                 .snippet("This is User 1's current location")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
-        try{
+        try {
             int tokens = 0;
             //4 tokens per user
-            while(tokenizer.hasMoreTokens()){
-                String name =tokenizer.nextToken();
+            while (tokenizer.hasMoreTokens()) {
+                String name = tokenizer.nextToken();
                 String number = tokenizer.nextToken();
-                double lo = Double.parseDouble(tokenizer.nextToken());
                 double la = Double.parseDouble(tokenizer.nextToken());
+                double lo = Double.parseDouble(tokenizer.nextToken());
 
                 User user = new User();
                 user.setUsername(name);
                 user.setPhoneNumber(number);
-                user.setWorldPoint(lo, la);
+                user.setWorldPoint(la, lo);
 
                 group.add(user);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
        /* for(int i = 0; i < users.length(); i++){
@@ -225,82 +224,107 @@ public class MainMapsActivity extends ActionBarActivity {
             }
         }*/
 
-        LatLng current = new LatLng(gps.getLocation().getLongitude(), gps.getLocation().getLatitude());
+        LatLng current = new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
 
-        for(int i = 0; i < group.size(); i++){
+        for (int i = 0; i < group.size(); i++) {
             User user = group.get(i);
-            LatLng lat = new LatLng(user.getLong(), user.getLat());
-            mMap.addMarker(new MarkerOptions().position(lat).title(user.getUserName()).snippet(user.getPhoneNumber()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
+            if(!user.getPhoneNumber().startsWith(number)) {
+                LatLng lat = new LatLng(user.getLat(), user.getLong());
+                mMap.addMarker(new MarkerOptions().position(lat).title(user.getUserName()).snippet(user.getPhoneNumber()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
         }
 
-            //mMap.getMyLocation();
+
+
+
+        //mMap.getMyLocation();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
     }
+
     private void setUpMap() {
-        LatLng current = new LatLng(gps.getLocation().getLatitude(),gps.getLocation().getLongitude());
+
+        if(!inGroup) {
+            LatLng current = new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
 
 
-
-        mMap.setMyLocationEnabled(true);
-
+            mMap.setMyLocationEnabled(true);
+            mMap.addMarker(new MarkerOptions().position(current).title("test").snippet("test").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
       /*  mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(-130, -120))
                 .title("USER 1")
                 .snippet("This is User 1's current location")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));*/
-        //this sets the view of the map zoomed such that the user's current
-        //location and the second users location is visible.
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));
+            //this sets the view of the map zoomed such that the user's current
+            //location and the second users location is visible.
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));
 
-      ;
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        // This addMarker sets the location of the second User in Downtown SF.
+            ;
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            // This addMarker sets the location of the second User in Downtown SF.
 
-        // This set the function for long press on the map.
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions().position(latLng)
-                        .title("Your location : ")
-                        .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude)
-                        .draggable(true));
-                lat = latLng.latitude;
-                lng = latLng.longitude;
-                Toast.makeText(getApplicationContext(),
-                        "NEW MARKER SET!",
-                        Toast.LENGTH_LONG).show();
-            }
+            // This set the function for long press on the map.
+            mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng latLng) {
+                    mMap.addMarker(new MarkerOptions().position(latLng)
+                            .title("Your location : ")
+                            .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude)
+                            .draggable(true));
+                    lat = latLng.latitude;
+                    lng = latLng.longitude;
+                    Toast.makeText(getApplicationContext(),
+                            "NEW MARKER SET!",
+                            Toast.LENGTH_LONG).show();
+                }
 
-        });
+            });
 
-        mMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                                         @Override
-                                         public void onMarkerDragStart(Marker marker) {
+            mMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                                             @Override
+                                             public void onMarkerDragStart(Marker marker) {
+                                             }
+
+                                             @Override
+                                             public void onMarkerDrag(Marker marker) {
+
+                                             }
+
+                                             @Override
+                                             public void onMarkerDragEnd(Marker marker) {
+                                                 mMap.clear();
+                                                 LatLng latLng = marker.getPosition();
+                                                 mMap.addMarker(new MarkerOptions().position(latLng)
+                                                         .title("Your location : ")
+                                                         .draggable(true)
+                                                         .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude));
+                                                 lat = latLng.latitude;
+                                                 lng = latLng.longitude;
+                                                 Toast.makeText(getApplicationContext(),
+                                                         "Lat : " + latLng.latitude + " ",
+                                                         Toast.LENGTH_LONG).show();
+                                             }
                                          }
 
-                                         @Override
-                                         public void onMarkerDrag(Marker marker) {
+            );
 
-                                         }
+        }else{
+            String info = (new GetGroupLocationClient(number)).getInfoFromRequest();
+                ArrayList<User> users = new ArrayList<User>();
 
-                                         @Override
-                                         public void onMarkerDragEnd(Marker marker) {
-                                             mMap.clear();
-                                             LatLng latLng = marker.getPosition();
-                                             mMap.addMarker(new MarkerOptions().position(latLng)
-                                                     .title("Your location : ")
-                                                     .draggable(true)
-                                                     .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude));
-                                             lat = latLng.latitude;
-                                             lng = latLng.longitude;
-                                             Toast.makeText(getApplicationContext(),
-                                                     "Lat : " + latLng.latitude + " ",
-                                                     Toast.LENGTH_LONG).show();
-                                         }
-                                     }
+                StringTokenizer t = new StringTokenizer(info);
 
-        );
+
+                while(t.hasMoreTokens()){
+                    String usern, usernum, lon, lat;
+
+                    usern = t.nextToken();
+                    usernum = t.nextToken();
+                    lon = t.nextToken();
+                    lat = t.nextToken();
+
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon))));
+                }
+        }
 
 
     }
@@ -310,11 +334,11 @@ public class MainMapsActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu items for use in the action bar
-        if(inGroup){
+        if (!inGroup) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_main_maps, menu);
             return super.onCreateOptionsMenu(menu);
-        }else{
+        } else {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.group_menu_map, menu);
             return super.onCreateOptionsMenu(menu);
@@ -322,40 +346,54 @@ public class MainMapsActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         //Creates a new Group and Activity
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_create_group:
-               //enter a group name
+                //enter a group name
 
-               //enter a username
-               //render group menu options
-               //render group map
+                //enter a username
+                //render group menu options
+                //render group map
+                return true;
 
             case R.id.action_settings:
                 Intent settings = new Intent(MainMapsActivity.this, Settings.class);
                 MainMapsActivity.this.startActivity(settings);
                 return true;
 
+            case R.id.action_chat:
+                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
+                MainMapsActivity.this.startActivity(chat);
+                return true;
+
+
+
+
+
             /*case R.id.action_chat:
                 //enter chat activity
-                Intent chat = new Intent(MainMapsActivity.this, Chat.class);
+                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
                 MainMapsActivity.this.startActivity(chat);
                 //text field to input to chat.
+
 
                 //send button
                 return true;*/
         }
 
-       return false;
+        return false;
+
+
+        //send button*/
 
     }
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+

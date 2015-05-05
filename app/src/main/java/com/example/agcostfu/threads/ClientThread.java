@@ -93,17 +93,17 @@ public class ClientThread implements Runnable {
 			groupn = com.get(3);
 
 		if (com.size() > 4) {
-			lon = com.get(4);
-			lat = com.get(5);
+			lat = com.get(4);
+			lon = com.get(5);
 		}
 
 		
 		//if upload, use un for the file location and groupn for comments to photo
 		if (command.startsWith("upload")) {
-			sendPhotoToServer(un, originnum, groupn, lon, lat);
+			sendPhotoToServer(un, originnum, groupn, lat, lon);
 		} else
-			Server.invokeAction(tSocket, command, originnum, un, groupn, lon,
-					lat, null);
+			Server.invokeAction(tSocket, command, originnum, un, groupn, lat,
+					lon, null);
 	}
 	
 

@@ -23,7 +23,7 @@ public class GetGroupLocationClient extends Client {
 					break;
 				
 				System.out.println(in);
-				info = info + "\n" + in;
+				info = info + " " + in;
 				in = threadInput.readLine();
 			}
 		} catch (IOException e) {

@@ -37,8 +37,7 @@ public class User {
 		return phonenumber;
 	}
 
-	public void setWorldPoint(double lon, double lat) {
-		System.out.println(lon);
+	public void setWorldPoint(double lat, double lon) {
 		longitude = lon;
 		latitude = lat;
 	}

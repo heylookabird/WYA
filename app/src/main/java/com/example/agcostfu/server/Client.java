@@ -27,7 +27,7 @@ public class Client {
 	}
 	
 	protected void init(String n){
-		info="no info yet";
+		info="";
 		//create scanner for Client input
 				//Scanner scanner = new Scanner(System.in);
 				loaded = new ArrayList<String>();
