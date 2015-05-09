@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <!--
@@ -50,8 +51,8 @@
         <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings"
-            android:theme="@style/SettingsTheme"
-            android:parentActivityName=".MainMapsActivity" >
+            android:parentActivityName=".MainMapsActivity"
+            android:theme="@style/SettingsTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.agcostfu.wya.MainMapsActivity" />
@@ -59,11 +60,27 @@
         <activity
             android:name=".ChatBubbleActivity"
             android:label="@string/chat"
-            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainMapsActivity"
+            android:theme="@style/AppTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
+        </activity>
+        <activity
+            android:name=".CameraActivity"
+            android:label="@string/title_activity_camera"
             android:parentActivityName=".MainMapsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.agcostfu.wya.MainMapsActivity" />
+        </activity>
+        <activity
+            android:name=".AddImage"
+            android:label="@string/title_activity_add_image"
+            android:parentActivityName=".CameraActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.agcostfu.wya.CameraActivity" />
         </activity>
     </application>
 

@@ -7,4 +7,6 @@
     <string name="Search">search</string>
     <string name="Settings">settings</string>
     <string name="chat">chat</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_add_image">AddImage</string>
 </resources>
