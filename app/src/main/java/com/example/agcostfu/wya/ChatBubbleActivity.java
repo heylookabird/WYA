@@ -33,6 +33,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
     Intent intent;
     private boolean side = false;
     private String number;
+    private int currIndex;
 
 
     @Override
@@ -43,7 +44,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
         //updateHandler = new Handler();
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         number = tm.getLine1Number();
-
+        currIndex = 0;
         buttonSend = (Button) findViewById(R.id.buttonSend);
 
         listView = (ListView) findViewById(R.id.listView1);
@@ -85,16 +86,19 @@ public class ChatBubbleActivity extends ActionBarActivity {
         updateHandler.post(update);
     }
 
-    private Runnable update = new Runnable() {
+    protected Runnable update = new Runnable() {
         @Override
         public void run() {
-            String chat = new GetGroupChatClient(number).getInfoFromRequest();
+            String chat = new GetGroupChatClient(number, currIndex).getInfoFromRequest();
             String next = "";
+
             for (int i = 0; i < chat.length(); i++) {
                 if (chat.charAt(i) != '\n') {
                     next = next + chat.charAt(i);
                 } else {
-                    chatArrayAdapter.add(new ChatMessage(side, chat));
+                    chatArrayAdapter.add(new ChatMessage(false, chat));
+                    //update index that we refresh from
+                    currIndex++;
                 }
             }
 
@@ -109,7 +113,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
 
     private boolean sendChatMessage() {
         String text = chatText.getText().toString();
-        chatArrayAdapter.add(new ChatMessage(side, text));
+        chatArrayAdapter.add(new ChatMessage(true, text));
 
 
         new AddToChatClient(number, number, text);

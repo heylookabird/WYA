@@ -1,6 +1,9 @@
 package com.example.agcostfu.server;
 
 //import java.awt.image.BufferedImage;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.DataInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -15,27 +18,67 @@ import com.example.agcostfu.main.PictureNode;
 
 
 public class GetPictureFromServerClient extends Client{
-    ArrayList<PictureNode> pictures;
-	public GetPictureFromServerClient(String n){
+    PictureNode pictures;
+    double lon, lat;
+	public GetPictureFromServerClient(String n, double lat, double lon){
         super();
-        pictures = new ArrayList<PictureNode>();
+        this.lat = lat;
+        this.lon = lon;
         init(n);
 	}
 	
 	@Override
 	public String getRequest(){
-		return "getPhotos , " + parentNum;
+		return "getPhotos , " + parentNum + " , " + " , " + lat + " , " + lon;
 	}
 
 
-    public ArrayList<PictureNode> getPictures(){
+    public PictureNode getPictures(){
         return pictures;
     }
 
-	/*@Override
+	@Override
 	protected void moreActions(){
-		try{
-			BufferedImage img = ImageIO.read(socket.getInputStream());
+
+        String current, user = "", title = "", la = "", lo = "";
+
+        byte []array = null;
+        try {
+            while((current = threadInput.readLine()) != null){
+                int commas = 0;
+                for(int i = 0; i < current.length(); i++){
+                    String temp ="";
+                    if(current.charAt(i) != ','){
+                        temp = temp + current.charAt(i);
+                    }else{
+                        if(commas == 0){
+                            array = temp.getBytes();
+                        }else if(commas == 1){
+                            user = temp;
+                        } else if(commas == 2){
+                            title = temp;
+                        }else if(commas == 3){
+                            la = temp;
+                        }else if(commas == 4){
+                            lo = temp;
+                        }
+
+                        commas++;
+
+                        temp ="";
+
+                    }
+                }
+            }
+
+            Bitmap image = BitmapFactory.decodeByteArray(array, 0, array.length);
+            pictures = new PictureNode(image, user, title, Double.parseDouble(la), Double.parseDouble(lo));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		/*try{
+			Bitmap img = BitmapFactory.decodeStream(socket.getInputStream());
+
 
             int commas = 0, i = 0;
             String strings[] = new String[5];
@@ -61,6 +104,6 @@ public class GetPictureFromServerClient extends Client{
             moreActions();
         }catch(Exception e){
 			
-		}
-	}*/
+		}*/
+	}
 }

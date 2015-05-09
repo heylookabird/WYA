@@ -1,5 +1,8 @@
 package com.example.agcostfu.threads;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -100,30 +103,19 @@ public class ClientThread implements Runnable {
 		
 		//if upload, use un for the file location and groupn for comments to photo
 		if (command.startsWith("upload")) {
-			sendPhotoToServer(un, originnum, groupn, lat, lon);
+			sendPhotoToServer(originnum, un, groupn, lat, lon);
 		} else
 			Server.invokeAction(tSocket, command, originnum, un, groupn, lat,
 					lon, null);
 	}
 	
 
-	private void sendPhotoToServer(String fileloc, String originnum, String chat, String lon, String lat) {
-	/*	try {
-			int i;
-			FileInputStream fis = new FileInputStream(fileloc);
-			DataOutputStream os = new DataOutputStream(tSocket.getOutputStream());
-			
-			while((i = fis.read()) > -1){
-				os.write(i);
-			}
-			
-			Server.uploadPhotoToGroup(tSocket, originnum, chat, lon, lat);
-			fis.close();
-			os.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+	private void sendPhotoToServer(String array, String originnum, String chat, String lat, String lon) {
+	    byte[] bytes = array.getBytes();
+
+        Server.uploadPhotoToGroup(bytes, originnum, chat, lat, lon);
+
+
 	}
 
 }

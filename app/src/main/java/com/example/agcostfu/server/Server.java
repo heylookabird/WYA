@@ -1,6 +1,10 @@
 package com.example.agcostfu.server;
 
 //import java.awt.image.BufferedImage;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -17,6 +21,7 @@ import java.util.Date;
 //import javax.imageio.ImageIO;
 
 import com.example.agcostfu.main.PictureNode;
+import com.example.agcostfu.main.Tag;
 import com.example.agcostfu.threads.ClientThread;
 import com.example.agcostfu.users.Group;
 import com.example.agcostfu.users.User;
@@ -93,44 +98,31 @@ public class Server {
 						String.class, String.class);
 				clientout.println(m.invoke(call, number, lon, lat));
 			} else if (call.startsWith("getGroupChat")) {
-				m = Server.class.getMethod("getGroupChat", String.class);
-
-				Object obj = m.invoke(call, number);
+				m = Server.class.getDeclaredMethod("getGroupChat", String.class, String.class);
+				Object obj = m.invoke(call, number, username);
 
 				if (obj instanceof ArrayList<?>) {
-					ArrayList<String> strings = (ArrayList<String>) m.invoke(
-							call, number);
+					ArrayList<String> strings = (ArrayList<String>) obj;
 
 					for (int i = 0; i < strings.size(); i++) {
 						clientout.println(strings.get(i));
 
-						if (i == strings.size() - 1)
-							clientout.println("/./.");
 					}
+                    clientout.println("/./.");
 
 				}
-			} /*else if(call.startsWith("getPhotos")){
-				m = Server.class.getMethod("getPhotos", String.class);
-				
+			} else if(call.startsWith("getPhotos")){
+				m = Server.class.getMethod("getPhotos", String.class, String.class, String.class);
 				//get file locations for server pictures based on user
-				Object obj = m.invoke(call, number);
-				
-				if(obj instanceof ArrayList){
-					ArrayList<PictureNode> pics = (ArrayList<PictureNode>) obj;
-					
-					for(int i = 0; i < pics.size(); i++){
-						try{
-                            BufferedImage im = pics.get(i).getImage();
-                            ImageIO.write(im, "JPEG", s.getOutputStream());
+				Object obj = m.invoke(call, number, lat, lon);
+					PictureNode pic = (PictureNode) obj;
+                        Bitmap bit = pic.getImage();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bit.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        byte array[] = baos.toByteArray();
+                        clientout.println(array + ", " +Server.searchForUser(number) + ", " + pic.getTitle() + ", " + pic.getLat() + ", " + pic.getLong());
 
-                            String extra = searchForUser(number).getUserName() + " , " + pics.get(i).getTitle() + " , " + pics.get(i).getLong() + " , " + pics.get(i).getLat() + " , " + pics.get(i).getChat();
-                            clientout.println(extra);
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-					}
-				}
-			}*/else if (call.startsWith("addPictureToGroup")) {
+			}else if (call.startsWith("addPictureToGroup")) {
 			} else if (call.startsWith("updateGroup")) {
 				m = Server.class.getMethod("updateGroup", String.class);
 				//clientout.println(m.invoke(call, number));
@@ -142,19 +134,36 @@ public class Server {
 
 					for (int i = 0; i < strings.size(); i++) {
 						clientout.println(strings.get(i));
-
-						if (i == strings.size() - 1)
-							clientout.println("/./.");
 					}
+
+                    clientout.println("/./.");
 				}
-			} else if (call.startsWith("makeNewGroup")) {
+			}else if (call.startsWith("updatePictures")) {
+                m = Server.class.getMethod("updatePictures", String.class);
+                //clientout.println(m.invoke(call, number));
+                Object obj = m.invoke(call, number);
+
+                if(obj instanceof ArrayList){
+                    ArrayList<String> strings = (ArrayList<String>) m.invoke(
+                            call, number);
+
+                    for (int i = 0; i < strings.size(); i++) {
+                        clientout.println(strings.get(i));
+                    }
+
+                    clientout.println("/./.");
+                }
+            } else if (call.startsWith("makeNewGroup")) {
 				m = Server.class.getMethod("makeNewGroup", String.class,
 						String.class, String.class);
 				clientout.println(m.invoke(call, gname, username, number));
 			} else if (call.startsWith("searchForUser")) {
 				m = Server.class.getMethod("searchForUser", String.class);
 				clientout.println(m.invoke(call, number));
-			}
+			}else if(call.startsWith("addTagToGroup")){
+                m = Server.class.getMethod("addTagToGroup", String.class, String.class, String.class, String.class);
+                clientout.println(m.invoke(call, number, username, lat, lon));
+            }
 			// Method method = Server.class.getMethod(call,
 			// Server.getParameterTypes());
 		} catch (Exception e) {
@@ -163,44 +172,43 @@ public class Server {
 		}
 	}
 	
-	public static ArrayList<PictureNode> getPhotos(String number){
+	public static PictureNode getPhotos(String number, String lat, String lon){
 		ArrayList<String> fileNames = new ArrayList<String>();
 		String id = searchForUser(number).getGroup().getID();
 		
-		ArrayList<PictureNode> p = searchForUser(number).getGroup().getPictureNodes();
+		PictureNode p = searchForUser(number).getGroup().getPicture(Double.parseDouble(lat), Double.parseDouble(lon));
 
 		
 		return p;
 	}
 
-	public static ArrayList<String> getGroupChat(String number) {
-		return searchForUser(number).getGroup().getGroupChat();
+	public static ArrayList<String> getGroupChat(String number, String index) {
+        int i = Integer.parseInt(index);
+
+		return searchForUser(number).getGroup().getGroupChat(i);
 	}
+
+    public static boolean addTagToGroup(String number, String tagTitle, String lat, String lon){
+        boolean success = false;
+
+        searchForUser(number).getGroup().addTag(new Tag(tagTitle, Double.parseDouble(lat), Double.parseDouble(lon)));
+        success = true;
+        return success;
+    }
 	
-	/*public static boolean uploadPhotoToGroup(Socket socket, String number, String chat, String lon, String lat){
+	public static boolean uploadPhotoToGroup(byte[] array, String number, String chat, String lat, String lon){
 		boolean success = false;
 		String groupID = searchForUser(number).getGroup().getID();
-		try {
-			DataInputStream dis = new DataInputStream(socket.getInputStream());
-			BufferedImage img = ImageIO.read(dis);
-			//FileOutputStream fout = new FileOutputStream(serverloc);
-			*//*int i;
-			while((i = dis.read()) > -1){
-				fout.write(i);
-			}
-			
-			fout.flush();
-			fout.close();*//*
-			dis.close();
-			success = true;
-			
-			addPhotoToGroup(number, img, chat, lon, lat);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+	    Bitmap img = BitmapFactory.decodeByteArray(array, 0, array.length);
+
+        PictureNode pic = new PictureNode(img, number, chat, Double.parseDouble(lat), Double.parseDouble(lon));
+
+        addPictureToGroup(number, pic);
+		success = true;
 		
 		return success;
-	}*/
+	}
 
 	/*private static void addPhotoToGroup(String number, BufferedImage img,
 			String chat, String lon, String lat) {
@@ -241,7 +249,7 @@ public class Server {
 			if (activeGroups.get(i).checkInvited(number)){
 				User admin = activeGroups.get(i).getUser(0);
 				if (numbers != null) {
-					numbers.concat(", " + admin.getUserName() + " number: "
+					numbers = numbers.concat(", " + admin.getUserName() + " number: "
 							+ admin.getPhoneNumber());
 				}else{
 					numbers = admin.getUserName() + " number: "
@@ -272,6 +280,29 @@ public class Server {
 
 		return Group.getGroupInfo(group);
 	}
+
+    public static ArrayList<String> updatePictures(String number){
+        ArrayList<String> locations = new ArrayList<String>();
+        Group group = searchForUser(number).getGroup();
+
+        ArrayList<PictureNode> pictures = group.getPictureNodes();
+        ArrayList<Tag> tags = group.getTags();
+
+        for(int i = 0; i < pictures.size(); i++){
+            PictureNode p = pictures.get(i);
+            String curr = p.getTitle() + " " + p.getLat() + " " + p.getLong();
+            locations.add(curr);
+        }
+
+        for(int i = 0; i < tags.size(); i++){
+            Tag p = tags.get(i);
+            String curr = p.getTag() + " " + p.getLat() + " " + p.getLon();
+            locations.add(curr);
+        }
+
+    return locations;
+
+    }
 
 	public static String unloadData() {
 		String data = "";

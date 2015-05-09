@@ -72,7 +72,7 @@ public class TestUser {
 		
 		new AddToChatClient(joe.getPhoneNumber(), joe.getUserName(), "What is HBIC?");
 		
-		new GetGroupChatClient(user1.getPhoneNumber());
+		//new GetGroupChatClient(user1.getPhoneNumber());
 		
 		new UpdatingClient(brooke.getPhoneNumber(), 100, 300);
 		new UpdatingClient(user1.getPhoneNumber(), 250, 10);

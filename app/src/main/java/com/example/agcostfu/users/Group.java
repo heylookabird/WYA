@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.example.agcostfu.main.PictureNode;
+import com.example.agcostfu.main.Tag;
 
 public class Group {
 	String name, password, id;
 	int expiration;
 	private ArrayList<String> chat;
+    private ArrayList<Tag> tags;
 	private ArrayList<User> members, blocked;
 	private ArrayList<String> invited;
 	private ArrayList<PictureNode> pictures;
@@ -43,7 +45,8 @@ public class Group {
 		admin.setGroup(this);
 		chat = new ArrayList<String>();
 		invited = new ArrayList<String>();
-		
+
+        tags= new ArrayList<Tag> ();
 		this.id = id;
 	}
 	
@@ -60,6 +63,14 @@ public class Group {
 		}
 		return info;
 	}
+
+    public ArrayList<Tag> getTags(){
+        return tags;
+    }
+
+    public void addTag(Tag tag){
+        tags.add(tag);
+    }
 
 	public boolean addPicture(PictureNode pic) {
 		return pictures.add(pic);
@@ -117,8 +128,23 @@ public class Group {
 
 	}
 
-	public ArrayList<String> getGroupChat() {
-		return chat;
+    public PictureNode getPicture(double lat, double lon){
+        for(int i = 0; i < pictures.size(); i++){
+            double distance = Math.hypot(Math.abs(pictures.get(i).getLat() - lat),Math.abs(pictures.get(i).getLong() - lon));
+            float d = .002f;
+            if(distance < d){
+                return pictures.get(i);
+            }
+        }
+        return null;
+    }
+
+	public ArrayList<String> getGroupChat(int index) {
+		ArrayList<String> newStrings = new ArrayList<String>();
+        for(int i = index; i < chat.size(); i++){
+            newStrings.add(chat.get(i));
+        }
+        return newStrings;
 	}
 
 	public ArrayList<PictureNode> getPictureNodes() {

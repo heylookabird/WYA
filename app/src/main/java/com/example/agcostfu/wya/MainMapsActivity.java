@@ -15,9 +15,13 @@ import android.widget.Toast;
 import android.content.Intent;
 
 
+import com.example.agcostfu.main.PictureNode;
+import com.example.agcostfu.main.Tag;
+import com.example.agcostfu.server.AddTagToGroupClient;
 import com.example.agcostfu.server.CreateGroupClient;
 import com.example.agcostfu.server.GetGroupChatClient;
 import com.example.agcostfu.server.GetGroupLocationClient;
+import com.example.agcostfu.server.GetGroupPictureLocationClient;
 import com.example.agcostfu.server.InviteClient;
 import com.example.agcostfu.server.UpdatingClient;
 import com.example.agcostfu.users.User;
@@ -58,6 +62,8 @@ public class MainMapsActivity extends ActionBarActivity {
     double radius = 5.0;
     double lat;
     double lng;
+    int chatLocation;
+    private ArrayList<PictureNode> groupPics;
 
     Handler updateHandler;
     String number;
@@ -81,10 +87,13 @@ public class MainMapsActivity extends ActionBarActivity {
         number = tm.getLine1Number();
         System.out.println(number);
         test();
+        chatLocation = 0;
         //setUpMap();
         setUpMapIfNeeded();
         startPeriodicUpdate();
         mMap.getMyLocation();
+
+        groupPics = new ArrayList<PictureNode>();
 
         String name = "test";
 
@@ -155,8 +164,9 @@ public class MainMapsActivity extends ActionBarActivity {
             new UpdatingClient(number, gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
             //if(inGroup) {
             String info = new GetGroupLocationClient(number).getInfoFromRequest();
+            String pics = new GetGroupPictureLocationClient(number).getInfoFromRequest();
             mMap.clear();
-            setUpMap(info);
+            setUpMap(info, pics);
          /*   }else
                 setUpMap();*/
 
@@ -169,8 +179,9 @@ public class MainMapsActivity extends ActionBarActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
 
-    private void setUpMap(String users) {
+    private void setUpMap(String users, String pics) {
         ArrayList<User> group = new ArrayList<User>();
+        ArrayList<Tag> pictureArray = new ArrayList<Tag>();
         String curr = "";
         int in = 0;
         String userinfo[] = new String[4];
@@ -202,27 +213,19 @@ public class MainMapsActivity extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       /* for(int i = 0; i < users.length(); i++){
-            if(users.charAt(i) != ','){
-                curr = curr + users.charAt(i);
-            }else if(users.charAt(i) == '\n'){
-                User user = new User();
-                user.setUsername(userinfo[0]);
-                user.setPhoneNumber(userinfo[1]);
-                System.out.println(userinfo[0] +": " + userinfo[2] + ", " + userinfo[3]);
-               user.setWorldPoint(Double.parseDouble(userinfo[2]), Double.parseDouble(userinfo[3]));
-                group.add(user);
 
-                if(in == 4)
-                    break;
-            }else{
-                String temp = curr;
-                userinfo[in] = temp;
-                curr = "";
-                in++;
+        tokenizer = new StringTokenizer(pics);
+        try{
+            while(tokenizer.hasMoreTokens()){
+                String name = tokenizer.nextToken();
+                double la = Double.parseDouble(tokenizer.nextToken());
+                double lo = Double.parseDouble(tokenizer.nextToken());
 
+                pictureArray.add(new Tag(name, la, lo));
             }
-        }*/
+        }catch(Exception e){
+
+        }
 
         LatLng current = new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
 
@@ -234,12 +237,20 @@ public class MainMapsActivity extends ActionBarActivity {
             }
         }
 
+        for (int i = 0; i < pictureArray.size(); i++) {
+            Tag user = pictureArray.get(i);
+                LatLng lat = new LatLng(user.getLat(), user.getLon());
+                mMap.addMarker(new MarkerOptions().position(lat).title(user.getTag()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        }
+
 
 
 
         //mMap.getMyLocation();
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
     }
+
+
 
     private void setUpMap() {
 
@@ -266,15 +277,17 @@ public class MainMapsActivity extends ActionBarActivity {
             mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                 @Override
                 public void onMapLongClick(LatLng latLng) {
+                    String title = "Test tag ";
                     mMap.addMarker(new MarkerOptions().position(latLng)
-                            .title("Your location : ")
-                            .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude)
-                            .draggable(true));
+                            .title(title)
+                            .snippet("need to add something for them to title"));
                     lat = latLng.latitude;
                     lng = latLng.longitude;
                     Toast.makeText(getApplicationContext(),
                             "NEW MARKER SET!",
                             Toast.LENGTH_LONG).show();
+
+                    new AddTagToGroupClient(number, title, ""+lat, ""+lng);
                 }
 
             });

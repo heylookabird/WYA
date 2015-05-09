@@ -10,11 +10,26 @@ import com.example.agcostfu.users.User;
 public class ClientCaller {
 	static ArrayList<String> helpcommands;
 	static ArrayList<User> clientUsers;
-
+    static int currIndex;
+    static String currChat;
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		init();
 		clientUsers = new ArrayList<User>();
+        currIndex = 0;
+        currChat = "";
+        User harjit = new User();
+        harjit.setUsername("harjit");
+        harjit.setPhoneNumber("1234");
+        clientUsers.add(harjit);
+        User brooke = new User();
+        brooke.setUsername("brooke");
+        brooke.setPhoneNumber("2345");
+        clientUsers.add(brooke);
+
+        new CreateGroupClient("Test", harjit.getPhoneNumber(), harjit.getUserName());
+        new AddToGroupClient(harjit.getPhoneNumber(), brooke.getPhoneNumber(), brooke.getUserName());
+
 		while (true) {
 			String input = scanner.nextLine();
 			StringTokenizer tokenizer = new StringTokenizer(input);
@@ -66,7 +81,8 @@ public class ClientCaller {
 						break;
 					}
 					if (next.startsWith("chat")) {
-						new GetGroupChatClient(number);
+						String chat = new GetGroupChatClient(number, currIndex).getInfoFromRequest();
+                        currIndex += new StringTokenizer(chat, "\n").countTokens();
 					} else if (next.startsWith("locations")) {
 						new GetGroupLocationClient(number);
 					} else {

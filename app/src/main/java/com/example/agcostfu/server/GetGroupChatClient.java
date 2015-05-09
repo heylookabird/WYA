@@ -5,14 +5,18 @@ import java.io.IOException;
 import com.example.agcostfu.users.User;
 
 public class GetGroupChatClient extends Client {
+    int loc;
+	public GetGroupChatClient(String n, int index) {
 
-	public GetGroupChatClient(String n) {
-		super(n);
+        super();
+        loc = index;
+        init(n);
+
 	}
 
 	@Override
 	public String getRequest() {
-		return "getGroupChat , " + parentNum;
+		return "getGroupChat , " + parentNum + " ," + loc;
 	}
 
 	@Override
