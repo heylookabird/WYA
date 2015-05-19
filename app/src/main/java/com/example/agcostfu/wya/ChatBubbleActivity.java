@@ -44,8 +44,8 @@ public class ChatBubbleActivity extends ActionBarActivity {
         Intent i = getIntent();
         setContentView(R.layout.activity_chat);
         updateHandler = new Handler();
-        //TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        number = LonelyMapActivity.getThisNumber();
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        number = tm.getLine1Number();
         currIndex = 0;
         buttonSend = (Button) findViewById(R.id.buttonSend);
 
@@ -103,7 +103,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
                     while (next != null) {
                         //hopefully take out your own input
                         String numbuffer = next.substring(1);
-                        if (!numbuffer.startsWith(number)) {
+                        if (!numbuffer.startsWith(MainMapsActivity.getThisNumber())) {
                             //hopefully take out repeats
                             if (currIndex == 0) {
                                 chatArrayAdapter.add(new ChatMessage(false, next));

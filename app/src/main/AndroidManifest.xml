@@ -8,7 +8,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -32,7 +31,7 @@
             android:value="AIzaSyDlThyE_9riMLt24un2QwhZoWrU5Q7lqoo" />
 
         <activity
-            android:name=".LonelyMapActivity"
+            android:name=".MainMapsActivity"
             android:label="@string/Map" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,28 +51,28 @@
         <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".LonelyMapActivity"
+            android:parentActivityName=".MainMapsActivity"
             android:theme="@style/SettingsTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.agcostfu.wya.LonelyMapActivity" />
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
         </activity>
         <activity
             android:name=".ChatBubbleActivity"
             android:label="@string/chat"
-            android:parentActivityName=".GroupMapActivity"
+            android:parentActivityName=".MainMapsActivity"
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.agcostfu.wya.GroupMapActivity" />
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
         </activity>
         <activity
             android:name=".CameraActivity"
             android:label="@string/title_activity_camera"
-            android:parentActivityName=".GroupMapActivity" >
+            android:parentActivityName=".MainMapsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.agcostfu.wya.GroupMapActivity" />
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
         </activity>
         <activity
             android:name=".AddImage"
@@ -84,20 +83,12 @@
                 android:value="com.example.agcostfu.wya.CameraActivity" />
         </activity>
         <activity
-            android:name=".CreateNewGroup"
-            android:label="@string/title_activity_create_new_group"
-            android:parentActivityName=".LonelyMapActivity" >
+            android:name=".createGroup"
+            android:label="@string/title_activity_create_group"
+            android:parentActivityName=".MainMapsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.agcostfu.wya.LonelyMapActivity" />
-        </activity>
-        <activity
-            android:name=".GroupMapActivity"
-            android:label="@string/title_activity_group_map"
-            android:parentActivityName=".CreateNewGroup" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.agcostfu.wya.CreateNewGroup" />
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
         </activity>
     </application>
 
