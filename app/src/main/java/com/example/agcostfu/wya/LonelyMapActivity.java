@@ -2,15 +2,19 @@ package com.example.agcostfu.wya;
 
 
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
 
@@ -71,6 +75,7 @@ public class LonelyMapActivity extends ActionBarActivity {
     static String number;
 
     static boolean inGroup;
+    Button viewInvites, add1, add2, add3;
 
 
     static TextView textView = null;
@@ -98,6 +103,22 @@ public class LonelyMapActivity extends ActionBarActivity {
         groupPics = new ArrayList<PictureNode>();
 
         String name = "test";
+
+
+
+        add1 = (Button) findViewById(R.id.button);
+        add2 = (Button) findViewById(R.id.button);
+        add3 = (Button) findViewById(R.id.button);
+
+
+        viewInvites = (Button) findViewById(R.id.button);
+        viewInvites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(LonelyMapActivity.this, PendingInvites.class);
+                LonelyMapActivity.this.startActivity(i);
+            }
+        });
 
 /*        new CreateGroupClient("Group", number, name);
         new InviteClient(number, "" + 1234);
