@@ -82,6 +82,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.agcostfu.wya.CameraActivity" />
         </activity>
+        <activity
+            android:name=".createGroup"
+            android:label="@string/title_activity_create_group"
+            android:parentActivityName=".MainMapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.agcostfu.wya.MainMapsActivity" />
+        </activity>
     </application>
 
 </manifest>

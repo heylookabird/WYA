@@ -76,7 +76,6 @@ public class CameraActivity extends ActionBarActivity {
         });
         builder.show();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -101,8 +100,8 @@ public class CameraActivity extends ActionBarActivity {
                     String path = android.os.Environment
                             .getExternalStorageDirectory()
                             + File.separator
-                            + "Phoenix" + File.separator + "default";
-                    f.delete();
+                            + "emulated" + File.separator + "0";
+                    //f.delete();
                     OutputStream outFile = null;
                     File file = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
                     try {
@@ -110,11 +109,6 @@ public class CameraActivity extends ActionBarActivity {
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
                         outFile.flush();
                         outFile.close();
-                        //adding intent to new activity to add title and add thumbnail to
-                        //location of the user at current Lat,Lng
-                        Intent addImg = new Intent(CameraActivity.this, AddImage.class);
-                        CameraActivity.this.startActivity(addImg);
-
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -129,20 +123,16 @@ public class CameraActivity extends ActionBarActivity {
 
                 Uri selectedImage = data.getData();
                 String[] filePath = { MediaStore.Images.Media.DATA };
-                Cursor c = getContentResolver().query(selectedImage,filePath, null, null, null);
+                Cursor c = getContentResolver().query(selectedImage, filePath, null, null, null);
                 c.moveToFirst();
                 int columnIndex = c.getColumnIndex(filePath[0]);
                 String picturePath = c.getString(columnIndex);
                 c.close();
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-                Log.w("", picturePath + "");
+                Log.w("storage/emulated/0/", picturePath + "" );
                 viewImage.setImageBitmap(thumbnail);
-
-                //adding intent to new activity to add title and add thumbnail to
-                //location of the user at current Lat,Lng
-                Intent addImg = new Intent(CameraActivity.this, AddImage.class);
-                CameraActivity.this.startActivity(addImg);
             }
         }
     }
+
 }

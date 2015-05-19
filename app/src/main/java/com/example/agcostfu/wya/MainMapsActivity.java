@@ -368,8 +368,12 @@ public class MainMapsActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_create_group:
                 //enter a group name
-
+                Intent newGroup = new Intent(MainMapsActivity.this, createGroup.class);
+                MainMapsActivity.this.startActivity(newGroup);
                 //enter a username
+
+                //grab your own phone number getThisNumber()
+
                 //render group menu options
                 //render group map
                 return true;
