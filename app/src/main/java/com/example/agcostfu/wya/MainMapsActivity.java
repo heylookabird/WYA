@@ -22,6 +22,7 @@ import com.example.agcostfu.server.CreateGroupClient;
 import com.example.agcostfu.server.GetGroupChatClient;
 import com.example.agcostfu.server.GetGroupLocationClient;
 import com.example.agcostfu.server.GetGroupPictureLocationClient;
+import com.example.agcostfu.server.GetPictureFromServerClient;
 import com.example.agcostfu.server.InviteClient;
 import com.example.agcostfu.server.UpdatingClient;
 import com.example.agcostfu.users.User;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Marker;
 
 import static com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import static com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 
 import android.support.v7.app.ActionBarActivity;
 import android.widget.TextView;
@@ -190,13 +192,13 @@ public class MainMapsActivity extends ActionBarActivity {
         int in = 0;
         String userinfo[] = new String[4];
         StringTokenizer tokenizer = new StringTokenizer(users);
-        System.out.println("TOKENIZERS: " + users);
+        System.out.println("TOKENIZERS: " + pics);
 
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude()))
                 .title("USER 1")
                 .snippet("This is User 1's current location")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
         try {
             int tokens = 0;
@@ -222,8 +224,11 @@ public class MainMapsActivity extends ActionBarActivity {
         try{
             while(tokenizer.hasMoreTokens()){
                 String name = tokenizer.nextToken();
+                String strla = tokenizer.nextToken();
                 double la = Double.parseDouble(tokenizer.nextToken());
                 double lo = Double.parseDouble(tokenizer.nextToken());
+
+
 
                 pictureArray.add(new Tag(name, la, lo));
             }
@@ -294,6 +299,24 @@ public class MainMapsActivity extends ActionBarActivity {
                     new AddTagToGroupClient(number, title, ""+lat, ""+lng);
                 }
 
+            });
+
+            mMap.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    LatLng pos = marker.getPosition();
+                    PictureNode pic = null;
+
+                    try {
+                        pic = new GetPictureFromServerClient(number, pos.latitude, pos.longitude).getPictures();
+                    }catch(Exception e){
+
+                    }
+
+
+                        return false;
+                }
             });
 
             mMap.setOnMarkerDragListener(new OnMarkerDragListener() {

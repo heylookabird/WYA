@@ -27,8 +27,6 @@ public class GetGroupChatClient extends Client {
 			while (in != null) {
 				if(in.endsWith("/./."))
 					break;
-				
-				System.out.println(in);
 				info = info + '\n' + in;
 				in = threadInput.readLine();
 			}

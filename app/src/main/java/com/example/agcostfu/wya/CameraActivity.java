@@ -135,7 +135,7 @@ public class CameraActivity extends ActionBarActivity {
                 String picturePath = c.getString(columnIndex);
                 c.close();
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-                Log.w("", picturePath + "");
+                Log.w("storage/emulated/0/", picturePath + "");
                 viewImage.setImageBitmap(thumbnail);
 
                 //adding intent to new activity to add title and add thumbnail to

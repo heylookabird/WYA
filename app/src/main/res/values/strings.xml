@@ -9,4 +9,5 @@
     <string name="chat">chat</string>
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_add_image">AddImage</string>
+    <string name="title_activity_image_chat">ImageChatActivity</string>
 </resources>
