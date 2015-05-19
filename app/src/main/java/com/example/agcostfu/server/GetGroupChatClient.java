@@ -29,7 +29,7 @@ public class GetGroupChatClient extends Client {
 					break;
 				
 				System.out.println(in);
-				info = info + "\n" + in;
+				info = info + '\n' + in;
 				in = threadInput.readLine();
 			}
 		} catch (IOException e) {

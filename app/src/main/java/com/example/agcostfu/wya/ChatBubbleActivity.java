@@ -41,7 +41,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
         setContentView(R.layout.activity_chat);
-        //updateHandler = new Handler();
+        updateHandler = new Handler();
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         number = tm.getLine1Number();
         currIndex = 0;
@@ -96,9 +96,18 @@ public class ChatBubbleActivity extends ActionBarActivity {
                 if (chat.charAt(i) != '\n') {
                     next = next + chat.charAt(i);
                 } else {
-                    chatArrayAdapter.add(new ChatMessage(false, chat));
-                    //update index that we refresh from
-                    currIndex++;
+                    //hopefully take out your own input
+                    if(!next.startsWith(MainMapsActivity.getThisNumber())) {
+                        //hopefully take out repeats
+                        if(currIndex == 0){
+                            chatArrayAdapter.add(new ChatMessage(false, chat));
+                        }
+                        else if(!chatArrayAdapter.getItem(currIndex).equals(chat)) {
+                            chatArrayAdapter.add(new ChatMessage(false, chat));
+                            //update index that we refresh from
+                            currIndex++;
+                        }
+                    }
                 }
             }
 
@@ -117,6 +126,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
 
 
         new AddToChatClient(number, number, text);
+        currIndex++;
         chatText.setText("");
         side = !side;
         return true;

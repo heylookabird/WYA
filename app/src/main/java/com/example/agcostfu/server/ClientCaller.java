@@ -24,7 +24,7 @@ public class ClientCaller {
         clientUsers.add(harjit);
         User brooke = new User();
         brooke.setUsername("brooke");
-        brooke.setPhoneNumber("2345");
+        brooke.setPhoneNumber("1111");
         clientUsers.add(brooke);
 
         new CreateGroupClient("Test", harjit.getPhoneNumber(), harjit.getUserName());

@@ -29,7 +29,6 @@ public class User {
 	}
 
 	public void setPhoneNumber(String number) {
-		System.out.println(username + " changed numbers to " + number);
 		phonenumber = number;
 	}
 

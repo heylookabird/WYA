@@ -66,7 +66,7 @@ public class MainMapsActivity extends ActionBarActivity {
     private ArrayList<PictureNode> groupPics;
 
     Handler updateHandler;
-    String number;
+    static String number;
 
     boolean inGroup;
 
@@ -103,6 +103,10 @@ public class MainMapsActivity extends ActionBarActivity {
         inGroup = true;
 
         setUpMapIfNeeded();
+    }
+
+    public static String getThisNumber(){
+        return number;
     }
 
     public void enableStrictMode() {
