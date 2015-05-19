@@ -21,6 +21,8 @@ import com.example.agcostfu.server.GetGroupChatClient;
 import com.example.agcostfu.server.GetGroupLocationClient;
 import com.example.agcostfu.server.UpdatingClient;
 
+import java.util.StringTokenizer;
+
 
 public class ChatBubbleActivity extends ActionBarActivity {
     private static final String TAG = "ChatActivity";
@@ -90,26 +92,52 @@ public class ChatBubbleActivity extends ActionBarActivity {
         @Override
         public void run() {
             String chat = new GetGroupChatClient(number, currIndex).getInfoFromRequest();
-            String next = "";
 
-            for (int i = 0; i < chat.length(); i++) {
+            if(chat.length() > 0) {
+                StringTokenizer tokenizer = new StringTokenizer(chat, "\n");
+
+                try {
+
+                    String next = tokenizer.nextToken();
+
+                    while (next != null) {
+                        //hopefully take out your own input
+                        String numbuffer = next.substring(1);
+                        if (!numbuffer.startsWith(MainMapsActivity.getThisNumber())) {
+                            //hopefully take out repeats
+                            if (currIndex == 0) {
+                                chatArrayAdapter.add(new ChatMessage(false, next));
+                                currIndex++;
+                            } else if (!chatArrayAdapter.getItem(currIndex - 1).equals(next)) {
+                                chatArrayAdapter.add(new ChatMessage(false, next));
+                                //update index that we refresh from
+                                currIndex++;
+                            }
+                        }else{
+
+                            if (currIndex == 0) {
+                                chatArrayAdapter.add(new ChatMessage(true, next));
+                                currIndex++;
+                            } else if (!chatArrayAdapter.getItem(currIndex - 1).equals(next)) {
+                                chatArrayAdapter.add(new ChatMessage(true, next));
+                                //update index that we refresh from
+                                currIndex++;
+                            }
+                        }
+
+                        next = tokenizer.nextToken();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+          /*  for (int i = 0; i < chat.length(); i++) {
                 if (chat.charAt(i) != '\n') {
                     next = next + chat.charAt(i);
                 } else {
-                    //hopefully take out your own input
-                    if(!next.startsWith(MainMapsActivity.getThisNumber())) {
-                        //hopefully take out repeats
-                        if(currIndex == 0){
-                            chatArrayAdapter.add(new ChatMessage(false, chat));
-                        }
-                        else if(!chatArrayAdapter.getItem(currIndex).equals(chat)) {
-                            chatArrayAdapter.add(new ChatMessage(false, chat));
-                            //update index that we refresh from
-                            currIndex++;
-                        }
-                    }
+
                 }
-            }
+            }*/
 
             //chatArrayAdapter.add(new ChatMessage(side, chat));
             //if(inGroup)

@@ -70,6 +70,7 @@ public class Group {
 
     public void addTag(Tag tag){
         tags.add(tag);
+        System.out.println("tag added: " + tag.getTag() + " , " + tag.getLat() + "," + tag.getLon());
     }
 
 	public boolean addPicture(PictureNode pic) {
