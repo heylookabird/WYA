@@ -55,7 +55,7 @@ import com.example.agcostfu.wya.SplashScreen;
 import java.lang.String;
 
 
-public class MainMapsActivity extends ActionBarActivity {
+public class LonelyMapActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     GPSTracker gps;
@@ -70,7 +70,7 @@ public class MainMapsActivity extends ActionBarActivity {
     Handler updateHandler;
     static String number;
 
-    boolean inGroup;
+    static boolean inGroup;
 
 
     static TextView textView = null;
@@ -81,7 +81,7 @@ public class MainMapsActivity extends ActionBarActivity {
         setContentView(R.layout.fragmap_activity);
         SplashScreen splash = new SplashScreen();
         enableStrictMode();
-        gps = new GPSTracker(MainMapsActivity.this);
+        gps = new GPSTracker(LonelyMapActivity.this);
         lat = gps.getLocation().getLatitude();
         lng = gps.getLocation().getLongitude();
         updateHandler = new Handler();
@@ -99,10 +99,10 @@ public class MainMapsActivity extends ActionBarActivity {
 
         String name = "test";
 
-        new CreateGroupClient("Group", number, name);
+/*        new CreateGroupClient("Group", number, name);
         new InviteClient(number, "" + 1234);
-        new InviteClient(number, "" + 1111);
-        inGroup = true;
+        new InviteClient(number, "" + 1111);*/
+        inGroup = false;
 
         setUpMapIfNeeded();
     }
@@ -167,14 +167,14 @@ public class MainMapsActivity extends ActionBarActivity {
     private Runnable update = new Runnable() {
         @Override
         public void run() {
+            if(inGroup) {
             new UpdatingClient(number, gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
-            //if(inGroup) {
             String info = new GetGroupLocationClient(number).getInfoFromRequest();
             String pics = new GetGroupPictureLocationClient(number).getInfoFromRequest();
             mMap.clear();
             setUpMap(info, pics);
-         /*   }else
-                setUpMap();*/
+            }else
+                setUpMap();
 
             updateHandler.postDelayed(update, 5000);
         }
@@ -252,6 +252,71 @@ public class MainMapsActivity extends ActionBarActivity {
                 mMap.addMarker(new MarkerOptions().position(lat).title(user.getTag()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
 
+        // This set the function for long press on the map.
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                String title = "Test tag ";
+                mMap.addMarker(new MarkerOptions().position(latLng)
+                        .title(title)
+                        .snippet("need to add something for them to title"));
+                lat = latLng.latitude;
+                lng = latLng.longitude;
+                Toast.makeText(getApplicationContext(),
+                        "NEW MARKER SET!",
+                        Toast.LENGTH_LONG).show();
+
+                new AddTagToGroupClient(number, title, ""+lat, ""+lng);
+            }
+
+        });
+
+        mMap.setOnMarkerClickListener(new OnMarkerClickListener(){
+
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                LatLng pos = marker.getPosition();
+                PictureNode pic = null;
+
+                try {
+                    pic = new GetPictureFromServerClient(number, pos.latitude, pos.longitude).getPictures();
+                }catch(Exception e){
+
+                }
+
+
+                return false;
+            }
+        });
+
+        mMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                                         @Override
+                                         public void onMarkerDragStart(Marker marker) {
+                                         }
+
+                                         @Override
+                                         public void onMarkerDrag(Marker marker) {
+
+                                         }
+
+                                         @Override
+                                         public void onMarkerDragEnd(Marker marker) {
+                                             mMap.clear();
+                                             LatLng latLng = marker.getPosition();
+                                             mMap.addMarker(new MarkerOptions().position(latLng)
+                                                     .title("Your location : ")
+                                                     .draggable(true)
+                                                     .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude));
+                                             lat = latLng.latitude;
+                                             lng = latLng.longitude;
+                                             Toast.makeText(getApplicationContext(),
+                                                     "Lat : " + latLng.latitude + " ",
+                                                     Toast.LENGTH_LONG).show();
+                                         }
+                                     }
+
+        );
+
 
 
 
@@ -263,7 +328,7 @@ public class MainMapsActivity extends ActionBarActivity {
 
     private void setUpMap() {
 
-        if(!inGroup) {
+
             LatLng current = new LatLng(gps.getLocation().getLatitude(), gps.getLocation().getLongitude());
 
 
@@ -277,96 +342,8 @@ public class MainMapsActivity extends ActionBarActivity {
             //this sets the view of the map zoomed such that the user's current
             //location and the second users location is visible.
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));
-
-            ;
             mMap.getUiSettings().setZoomControlsEnabled(true);
             // This addMarker sets the location of the second User in Downtown SF.
-
-            // This set the function for long press on the map.
-            mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng latLng) {
-                    String title = "Test tag ";
-                    mMap.addMarker(new MarkerOptions().position(latLng)
-                            .title(title)
-                            .snippet("need to add something for them to title"));
-                    lat = latLng.latitude;
-                    lng = latLng.longitude;
-                    Toast.makeText(getApplicationContext(),
-                            "NEW MARKER SET!",
-                            Toast.LENGTH_LONG).show();
-
-                    new AddTagToGroupClient(number, title, ""+lat, ""+lng);
-                }
-
-            });
-
-            mMap.setOnMarkerClickListener(new OnMarkerClickListener(){
-
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    LatLng pos = marker.getPosition();
-                    PictureNode pic = null;
-
-                    try {
-                        pic = new GetPictureFromServerClient(number, pos.latitude, pos.longitude).getPictures();
-                    }catch(Exception e){
-
-                    }
-
-
-                        return false;
-                }
-            });
-
-            mMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                                             @Override
-                                             public void onMarkerDragStart(Marker marker) {
-                                             }
-
-                                             @Override
-                                             public void onMarkerDrag(Marker marker) {
-
-                                             }
-
-                                             @Override
-                                             public void onMarkerDragEnd(Marker marker) {
-                                                 mMap.clear();
-                                                 LatLng latLng = marker.getPosition();
-                                                 mMap.addMarker(new MarkerOptions().position(latLng)
-                                                         .title("Your location : ")
-                                                         .draggable(true)
-                                                         .snippet("lat : " + latLng.latitude + "\nlng : " + latLng.longitude));
-                                                 lat = latLng.latitude;
-                                                 lng = latLng.longitude;
-                                                 Toast.makeText(getApplicationContext(),
-                                                         "Lat : " + latLng.latitude + " ",
-                                                         Toast.LENGTH_LONG).show();
-                                             }
-                                         }
-
-            );
-
-        }else{
-            String info = (new GetGroupLocationClient(number)).getInfoFromRequest();
-                ArrayList<User> users = new ArrayList<User>();
-
-                StringTokenizer t = new StringTokenizer(info);
-
-
-                while(t.hasMoreTokens()){
-                    String usern, usernum, lon, lat;
-
-                    usern = t.nextToken();
-                    usernum = t.nextToken();
-                    lon = t.nextToken();
-                    lat = t.nextToken();
-
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lon))));
-                }
-        }
-
-
     }
 
 
@@ -385,14 +362,18 @@ public class MainMapsActivity extends ActionBarActivity {
         }
     }
 
+    public static void setInGroup(boolean haveFriends){
+        inGroup = haveFriends;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //Creates a new Group and Activity
         switch (item.getItemId()) {
             case R.id.action_create_group:
                 //enter a group name
-                Intent newGroup = new Intent(MainMapsActivity.this, createGroup.class);
-                MainMapsActivity.this.startActivity(newGroup);
+                Intent newGroup = new Intent(LonelyMapActivity.this, CreateNewGroup.class);
+                LonelyMapActivity.this.startActivity(newGroup);
                 //enter a username
 
                 //grab your own phone number getThisNumber()
@@ -402,18 +383,8 @@ public class MainMapsActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_settings:
-                Intent settings = new Intent(MainMapsActivity.this, Settings.class);
-                MainMapsActivity.this.startActivity(settings);
-                return true;
-
-            case R.id.action_chat:
-                Intent chat = new Intent(MainMapsActivity.this, ChatBubbleActivity.class);
-                MainMapsActivity.this.startActivity(chat);
-                return true;
-
-            case R.id.action_camera:
-                Intent camera = new Intent(MainMapsActivity.this, CameraActivity.class);
-                MainMapsActivity.this.startActivity(camera);
+                Intent settings = new Intent(LonelyMapActivity.this, Settings.class);
+                LonelyMapActivity.this.startActivity(settings);
                 return true;
         }
 

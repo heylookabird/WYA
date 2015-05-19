@@ -65,8 +65,8 @@ public class CameraActivity extends ActionBarActivity {
                 }
                 else if (options[item].equals("Choose from Gallery"))
                 {
-                    Intent intent = new   Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(intent, 2);
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    startActivityForResult(intent, 0);
 
                 }
                 else if (options[item].equals("Cancel")) {
@@ -78,9 +78,14 @@ public class CameraActivity extends ActionBarActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 0) {
+                System.out.println(data.getExtras().toString());
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                viewImage.setImageBitmap(imageBitmap);
+
+            /*if (requestCode == 1) {
                 File f = new File(Environment.getExternalStorageDirectory().toString());
                 for (File temp : f.listFiles()) {
                     if (temp.getName().equals("temp.jpg")) {
@@ -131,7 +136,7 @@ public class CameraActivity extends ActionBarActivity {
                 Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
                 Log.w("storage/emulated/0/", picturePath + "" );
                 viewImage.setImageBitmap(thumbnail);
-            }
+            }*/
         }
     }
 
