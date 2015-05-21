@@ -12,4 +12,5 @@
     <string name="title_activity_create_group">createGroup</string>
     <string name="title_activity_create_new_group">CreateNewGroup</string>
     <string name="title_activity_group_map">GroupMapActivity</string>
+    <string name="title_activity_pending_invites">PendingInvites</string>
 </resources>

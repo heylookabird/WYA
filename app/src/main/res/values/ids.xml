@@ -2,4 +2,6 @@
 <resources>
     <item name="action_chat" type="id">action_chat</item>
     <item name="action_camera" type="id">action_camera</item>
+    <item name="my_textview" type="id">textview</item>
+    <item name="listview1" type="id">listview1</item>
 </resources>

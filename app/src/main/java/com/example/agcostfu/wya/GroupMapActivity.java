@@ -186,6 +186,7 @@ public class GroupMapActivity extends ActionBarActivity {
         new InviteClient(number, "" + 1111);*/
 
         setUpMapIfNeeded();
+        new InviteClient(LonelyMapActivity.getThisNumber(), "1234");
     }
 
     public static String getThisNumber(){

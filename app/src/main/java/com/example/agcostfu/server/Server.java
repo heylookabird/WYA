@@ -134,6 +134,7 @@ public class Server {
 
 					for (int i = 0; i < strings.size(); i++) {
 						clientout.println(strings.get(i));
+                        System.out.println(strings.get(i));
 					}
 
                     clientout.println("/./.");

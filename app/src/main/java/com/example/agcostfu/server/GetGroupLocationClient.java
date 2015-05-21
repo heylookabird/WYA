@@ -22,7 +22,7 @@ public class GetGroupLocationClient extends Client {
 				if(in.endsWith("/./."))
 					break;
 				
-				System.out.println(in);
+				//System.out.println(in);
 				info = info + " " + in;
 				in = threadInput.readLine();
 			}

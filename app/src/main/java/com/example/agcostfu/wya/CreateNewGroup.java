@@ -22,8 +22,8 @@ public class CreateNewGroup extends ActionBarActivity{
         Intent i = getIntent();
         setContentView(R.layout.action_create_group);
 
-        username = (EditText) findViewById(R.id.editText);
-        groupname = (EditText) findViewById(R.id.editText2);
+        username = (EditText) findViewById(R.id.username);
+        groupname = (EditText) findViewById(R.id.groupname);
         finish = (Button) findViewById(R.id.buttoncreate);
         username.setOnKeyListener(new View.OnKeyListener() {
             @Override
