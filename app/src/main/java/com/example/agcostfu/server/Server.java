@@ -27,10 +27,9 @@ import com.example.agcostfu.users.Group;
 import com.example.agcostfu.users.User;
 
 /*
- * So far its a chat server
- * Server example used can be found at drenguin.hubpages.com/hub/How-to-create-a-server-in-Java
- * 
- * Still trying to figure out what exactly to do to set up a server
+ * Server to store, send, and manage Groups of Users and their locations.
+ * All calls to Server are made through ClientThread.java so that we know what request was made.
+ * Inefficient and implementation will be changed soon.
  */
 public class Server {
 	public static void main(String[] args) {
@@ -38,7 +37,7 @@ public class Server {
 	}
 
 	public static ArrayList<Group> activeGroups;
-	public static int n = 0;
+
 	public Server() {
 		activeGroups = new ArrayList<Group>();
 		try {
@@ -62,16 +61,12 @@ public class Server {
 
 	}
 
-	public static void println(String string) {
-		System.out.println(string);
-	}
-
 	public static void invokeAction(Socket s, String call,
 			String number, String username, String gname, String lat,
 			String lon, PictureNode node) throws Exception {
 		PrintWriter clientout = new PrintWriter(s.getOutputStream(), true);
 
-		System.out.println("Action invoked " + call);
+		System.out.println("Action invoked " + call + ", number: " + number + ", user: " + username);
 		try {
 			Method m;
 			if(call.startsWith("clear")){
@@ -134,6 +129,7 @@ public class Server {
 
 					for (int i = 0; i < strings.size(); i++) {
 						clientout.println(strings.get(i));
+                        System.out.println(strings.get(i));
 					}
 
                     clientout.println("/./.");
@@ -174,7 +170,6 @@ public class Server {
 	
 	public static PictureNode getPhotos(String number, String lat, String lon){
 		ArrayList<String> fileNames = new ArrayList<String>();
-		String id = searchForUser(number).getGroup().getID();
 		
 		PictureNode p = searchForUser(number).getGroup().getPicture(Double.parseDouble(lat), Double.parseDouble(lon));
 
@@ -198,7 +193,6 @@ public class Server {
 	
 	public static boolean uploadPhotoToGroup(byte[] array, String number, String chat, String lat, String lon){
 		boolean success = false;
-		String groupID = searchForUser(number).getGroup().getID();
 
 	    Bitmap img = BitmapFactory.decodeByteArray(array, 0, array.length);
 
@@ -247,22 +241,25 @@ public class Server {
 
 		for (int i = 0; i < activeGroups.size(); i++) {
 			if (activeGroups.get(i).checkInvited(number)){
+                System.out.println("Found " + number);
 				User admin = activeGroups.get(i).getUser(0);
 				if (numbers != null) {
-					numbers = numbers.concat(", " + admin.getUserName() + " number: "
-							+ admin.getPhoneNumber());
+					numbers = numbers.concat("," + admin.getPhoneNumber());
 				}else{
-					numbers = admin.getUserName() + " number: "
-							+ admin.getPhoneNumber();
+					numbers = admin.getPhoneNumber();
 				}
 				
 			}
 		}
 
+        System.out.println("numbers: " + numbers);
+
 		return numbers;
 	}
 
 	public static boolean userUpdate(String number, String lat, String lon) {
+        boolean check = "+19162716749".contains(number);
+        System.out.println("check: " + check);
 		User found = searchForUser(number);
 		if (found != null)
 			found.setWorldPoint(Double.parseDouble(lat),
@@ -316,18 +313,18 @@ public class Server {
 
 	public static Group makeNewGroup(String groupname, String adminName,
 			String adminNum) {
-		Group g = new Group(groupname, adminName, adminNum, ""+n);
+		Group g = new Group(groupname, adminName, adminNum);
 
-        for(int i =0; i < activeGroups.size(); i++){
+/*        for(int i =0; i < activeGroups.size(); i++){
             for(int j = 0; j < activeGroups.get(i).size(); j++) {
                 if (activeGroups.get(i).getUser(j).getPhoneNumber().startsWith(adminNum)){
                     return g;
                 }
 
             }
-        }
+        }*/
 		addGroup(g);
-		n++;
+
 
 		return g;
 	}
@@ -341,11 +338,15 @@ public class Server {
 	}
 
 	public static User searchForUser(String number) {
+
 		if (activeGroups != null) {
 			for (int i = 0; i < activeGroups.size(); i++) {
 				Group g = activeGroups.get(i);
+
 				for (int j = 0; j < g.size(); j++) {
-					if (g.getUser(j).getPhoneNumber().contains(number)) {
+                    System.out.println("currNumber: " + g.getUser(j).getPhoneNumber());
+
+                    if (g.getUser(j).getPhoneNumber().contains(number)) {
 						return g.getUser(j);
 					}
 				}

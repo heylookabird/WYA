@@ -1,7 +1,7 @@
 package com.example.agcostfu.main;
 
 /**
- * Created by AGCOSTFU on 5/9/2015.
+ * Class used to store and handle Tags in the app
  */
 public class Tag {
 

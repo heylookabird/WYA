@@ -1,5 +1,9 @@
 package com.example.agcostfu.wya;
+/*
+Activity to handle chatting within an image to the server.
 
+
+ */
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;

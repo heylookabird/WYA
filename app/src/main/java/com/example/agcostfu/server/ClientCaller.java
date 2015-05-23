@@ -20,11 +20,11 @@ public class ClientCaller {
         currChat = "";
         User harjit = new User();
         harjit.setUsername("harjit");
-        harjit.setPhoneNumber("1234");
+        harjit.setPhoneNumber("+19162716749");
         clientUsers.add(harjit);
         User brooke = new User();
-        brooke.setUsername("brooke");
-        brooke.setPhoneNumber("1111");
+        brooke.setUsername("vince");
+        brooke.setPhoneNumber("12096081888");
         clientUsers.add(brooke);
 
         new CreateGroupClient("Test", harjit.getPhoneNumber(), harjit.getUserName());
@@ -39,8 +39,6 @@ public class ClientCaller {
 				System.exit(0);
 			} else if (call.startsWith("help")) {
 				outputHelp();
-			} else if (call.startsWith("clear")) {
-				new ClearClient("fake");
 			} else if (call.startsWith("chat")) {
 				User user = getUser(tokenizer.nextToken());
                 //hi

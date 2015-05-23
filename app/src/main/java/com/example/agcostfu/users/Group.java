@@ -7,7 +7,7 @@ import com.example.agcostfu.main.PictureNode;
 import com.example.agcostfu.main.Tag;
 
 public class Group {
-	String name, password, id;
+	String name, password;
 	int expiration;
 	private ArrayList<String> chat;
     private ArrayList<Tag> tags;
@@ -31,7 +31,7 @@ public class Group {
 
 	}
 
-	public Group(String groupname, String adminName, String adminNum, String id) {
+	public Group(String groupname, String adminName, String adminNum) {
 		members = new ArrayList<User>();
 		blocked = new ArrayList<User>();
 		pictures = new ArrayList<PictureNode>();
@@ -47,11 +47,6 @@ public class Group {
 		invited = new ArrayList<String>();
 
         tags= new ArrayList<Tag> ();
-		this.id = id;
-	}
-	
-	public String getID(){
-		return id;
 	}
 
 	public static ArrayList<String> getGroupInfo(Group g) {
@@ -70,7 +65,6 @@ public class Group {
 
     public void addTag(Tag tag){
         tags.add(tag);
-        System.out.println("tag added: " + tag.getTag() + " , " + tag.getLat() + "," + tag.getLon());
     }
 
 	public boolean addPicture(PictureNode pic) {
@@ -93,10 +87,6 @@ public class Group {
 		return members.get(index);
 	}
 
-	public void block(User user) {
-		blocked.add(user);
-	}
-
 	public boolean setPassword(String pw) {
 		this.password = pw;
 		return true;
@@ -108,19 +98,20 @@ public class Group {
 
 	public boolean addToGroup(User user) {
 		if (user.getGroup() != null) {
-			user.setGroup(this);
-		}
+            user.setGroup(this);
+        }
 
 		System.out.println(user + " already belongs to a group");
 		return false;
 	}
 
 	public void addToGroup(String invited2, String invitedName) {
-		User n = new User();
-		n.setUsername(invitedName);
-		n.setPhoneNumber(invited2);
-		n.setGroup(this);
-		members.add(n);
+            User n = new User();
+            n.setUsername(invitedName);
+            n.setPhoneNumber(invited2);
+            n.setGroup(this);
+            members.add(n);
+
 	}
 
 	public void addToChat(String senderName, String message) {

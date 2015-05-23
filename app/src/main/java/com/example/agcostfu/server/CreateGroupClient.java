@@ -1,5 +1,9 @@
 package com.example.agcostfu.server;
 
+/*
+* Client to add a Group to the server.
+*
+ */
 
 public class CreateGroupClient extends Client{
 

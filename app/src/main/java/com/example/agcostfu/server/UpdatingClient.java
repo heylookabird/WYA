@@ -1,5 +1,8 @@
 package com.example.agcostfu.server;
-
+/*
+* Client to send location data from user's phone to the server.
+*
+ */
 public class UpdatingClient extends Client {
 
 	double lo, la;
@@ -12,7 +15,7 @@ public class UpdatingClient extends Client {
 	
 	@Override
 	protected String getRequest(){
-		return "userUpdate , " + parentNum +" , null, null, " + lo + " , " + la;
+		return "userUpdate ," + parentNum +", null, null, " + lo + " , " + la;
 	}
 
 }

@@ -1,11 +1,12 @@
 package com.example.agcostfu.main;
+/*This class is used to store couple Bitmaps with location data and handle all data related to pictures/tags.
+*
+*
+ */
 
-//import java.awt.image.BufferedImage;
 import android.graphics.Bitmap;
 
-import java.io.FileInputStream;
 
-//import javax.imageio.ImageIO;
 
 public class PictureNode {
 	double longitude, latitude;
@@ -13,17 +14,11 @@ public class PictureNode {
 	String poster;
 	String chat;
 	String title;
-	String serverPath;
 	
 	public PictureNode(String path, double lon, double lat) {
 		chat = "";
 		longitude = lon;
 		latitude = lat;
-		/*try {
-			image = ImageIO.read(new FileInputStream(path));//TODO figure out what inputstream to use
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 	}
 	
 	public PictureNode(Bitmap image, String user, String title, double lat, double lon){
@@ -33,7 +28,7 @@ public class PictureNode {
 		longitude = lon;
 		latitude = lat;
 	}
-	
+
 	
 	public Bitmap getImage(){
 		return image;
@@ -42,6 +37,7 @@ public class PictureNode {
 	public void setTitle(String title){
 		this.title = title;
 	}
+
 	public String getTitle(){
 		return title;
 	}
@@ -62,7 +58,4 @@ public class PictureNode {
 		chat.concat(str + "\n");
 	}
 
-	public String getServerLocation() {
-		return null;
-	}
 }

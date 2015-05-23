@@ -1,4 +1,8 @@
 package com.example.agcostfu.server;
+/*
+* Client to get location data of other group members from the server.
+*
+ */
 
 import java.io.IOException;
 
@@ -10,7 +14,7 @@ public class GetGroupLocationClient extends Client {
 
 	@Override
 	protected String getRequest() {
-		return "updateGroup , " + this.parentNum;
+		return "updateGroup ," + this.parentNum;
 	}
 
 	@Override
@@ -22,7 +26,7 @@ public class GetGroupLocationClient extends Client {
 				if(in.endsWith("/./."))
 					break;
 				
-				System.out.println(in);
+				//System.out.println(in);
 				info = info + " " + in;
 				in = threadInput.readLine();
 			}

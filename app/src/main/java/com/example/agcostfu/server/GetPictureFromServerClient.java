@@ -1,6 +1,9 @@
 package com.example.agcostfu.server;
 
-//import java.awt.image.BufferedImage;
+/*
+* Client to get Picture data to the server.
+*
+ */
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 

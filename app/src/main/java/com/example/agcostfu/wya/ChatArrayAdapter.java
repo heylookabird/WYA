@@ -1,5 +1,9 @@
 package com.example.agcostfu.wya;
+/*
+Class to handle displaying Chat so that the user can separate and find themselves within the chat.
 
+
+ */
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

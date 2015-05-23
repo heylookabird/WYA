@@ -6,5 +6,6 @@
     </style>
 
     <style name="SettingsTheme">settings_theme</style>
+    <style name="button_text">button_text</style>
 
 </resources>

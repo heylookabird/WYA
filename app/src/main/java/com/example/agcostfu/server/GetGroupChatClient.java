@@ -1,5 +1,11 @@
 package com.example.agcostfu.server;
 
+
+/*
+* Client to get Chat data from the server.
+*
+ */
+
 import java.io.IOException;
 
 import com.example.agcostfu.users.User;
@@ -16,7 +22,7 @@ public class GetGroupChatClient extends Client {
 
 	@Override
 	public String getRequest() {
-		return "getGroupChat , " + parentNum + " ," + loc;
+		return "getGroupChat ," + parentNum + "," + loc;
 	}
 
 	@Override

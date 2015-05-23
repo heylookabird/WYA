@@ -2,8 +2,9 @@ package com.example.agcostfu.server;
 
 import java.io.IOException;
 
-/**
- * Created by AGCOSTFU on 5/9/2015.
+/*
+* Client to get Tags were added to Group from the server.
+*
  */
 public class GetGroupPictureLocationClient extends Client{
     public GetGroupPictureLocationClient(String n) {
@@ -12,7 +13,7 @@ public class GetGroupPictureLocationClient extends Client{
 
     @Override
     protected String getRequest() {
-        return "updatePictures , " + this.parentNum;
+        return "updatePictures ," + this.parentNum;
     }
 
     @Override
@@ -24,7 +25,7 @@ public class GetGroupPictureLocationClient extends Client{
                 if(in.endsWith("/./."))
                     break;
 
-                System.out.println(in);
+                //System.out.println(in);
                 info = info + " " + in;
                 in = threadInput.readLine();
             }

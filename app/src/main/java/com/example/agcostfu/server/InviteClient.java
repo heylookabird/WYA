@@ -1,5 +1,9 @@
 package com.example.agcostfu.server;
 
+/*
+* Client to send an invite through the server.
+*
+ */
 public class InviteClient extends Client {
 
 	String invited;

@@ -1,5 +1,9 @@
 package com.example.agcostfu.wya;
+/*
+Class that handles getting location data from device.
 
+
+ */
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -22,7 +26,7 @@ public class GPSTracker extends Service implements LocationListener{
     double latitude;
     double longitude;
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 10 * 600 * 1;
     protected LocationManager locationManager;
     public GPSTracker(Context context) {
         this.context = context;

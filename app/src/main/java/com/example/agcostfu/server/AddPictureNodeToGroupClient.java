@@ -1,5 +1,8 @@
 package com.example.agcostfu.server;
-
+/*
+* Client to send Picture data to the server.
+*
+ */
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -10,7 +13,7 @@ public class AddPictureNodeToGroupClient extends Client {
 	double lon, lat;
     byte []array;
 
-	public AddPictureNodeToGroupClient(String n, String fileLoc, String chat,
+	public AddPictureNodeToGroupClient(String number, String fileLoc, String chat,
 			double lon, double lat) {
 		fl = fileLoc;
 		this.lon = lon;
@@ -26,14 +29,8 @@ public class AddPictureNodeToGroupClient extends Client {
         }catch(Exception e){
 
         }
-        init(n);
+        init(number);
 	}
-
-    @Override
-    public void moreActions(){
-
-
-    }
 
 	@Override
 	public String getRequest() {

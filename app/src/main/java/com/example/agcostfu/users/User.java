@@ -17,7 +17,7 @@ public class User {
 	double latitude;
 
 	public User() {
-
+        username = "";
 	}
 
 	public void setUsername(String name) {

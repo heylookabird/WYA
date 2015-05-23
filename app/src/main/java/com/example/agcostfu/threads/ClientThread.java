@@ -31,14 +31,10 @@ public class ClientThread implements Runnable {
 	@Override
 	public void run() {
 
-		// String serverip = "localhost";
+
 
 		try {
-			// Socket socket = new Socket(serverip, 5000);
-			// Create IO streams for socket
-			// Basically this is the System.out and System.in for the person
-			// that
-			// is using the current socket
+
 			output = new PrintWriter(tSocket.getOutputStream(), true);
 			BufferedReader input = new BufferedReader(new InputStreamReader(
 					tSocket.getInputStream()));
@@ -76,14 +72,7 @@ public class ClientThread implements Runnable {
 
 		com.add(curr);
 
-		/*
-		 * double lon = 0, lat = 0; if (com.size() > 4) { lon =
-		 * (Double.parseDouble(com.get(5))); lat =
-		 * (Double.parseDouble(com.get(6))); }
-		 */
 
-		// Server invoke action frame: command, phonenumber, username,
-		// groupname, longitude, latitude, photos
 		String command = com.get(0);
 		String originnum = com.get(1);
 		String un = null, groupn = null;

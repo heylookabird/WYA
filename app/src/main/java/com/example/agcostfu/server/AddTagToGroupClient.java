@@ -1,7 +1,7 @@
 package com.example.agcostfu.server;
 
 /**
- * Created by AGCOSTFU on 5/9/2015.
+ * Client to send Tag data to the server.
  */
 public class AddTagToGroupClient extends Client{
     String tagTitle, lon, lat;
@@ -14,6 +14,6 @@ public class AddTagToGroupClient extends Client{
 
     @Override
     protected String getRequest(){
-        return "addTagToGroup ," + parentNum + " ," + tagTitle + " , ," + lat + " ," + lon;
+        return "addTagToGroup ," + parentNum + "," + tagTitle + ", ," + lat + "," + lon;
     }
 }

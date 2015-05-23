@@ -1,13 +1,15 @@
 package com.example.agcostfu.wya;
 
-import android.app.Activity;
-import android.content.Context;
+/*
+Activity to handle live updating the chat for the user
+
+
+ */
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
-import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -15,11 +17,9 @@ import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import com.example.agcostfu.server.AddToChatClient;
 import com.example.agcostfu.server.GetGroupChatClient;
-import com.example.agcostfu.server.GetGroupLocationClient;
-import com.example.agcostfu.server.UpdatingClient;
+
 
 import java.util.StringTokenizer;
 
@@ -32,7 +32,6 @@ public class ChatBubbleActivity extends ActionBarActivity {
     private EditText chatText;
     private Button buttonSend;
     private Handler updateHandler;
-    Intent intent;
     private boolean side = false;
     private String number;
     private int currIndex;
@@ -44,8 +43,8 @@ public class ChatBubbleActivity extends ActionBarActivity {
         Intent i = getIntent();
         setContentView(R.layout.activity_chat);
         updateHandler = new Handler();
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        number = tm.getLine1Number();
+        //TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        number = LonelyMapActivity.getThisNumber();
         currIndex = 0;
         buttonSend = (Button) findViewById(R.id.buttonSend);
 
@@ -103,7 +102,7 @@ public class ChatBubbleActivity extends ActionBarActivity {
                     while (next != null) {
                         //hopefully take out your own input
                         String numbuffer = next.substring(1);
-                        if (!numbuffer.startsWith(MainMapsActivity.getThisNumber())) {
+                        if (!numbuffer.startsWith(number)) {
                             //hopefully take out repeats
                             if (currIndex == 0) {
                                 chatArrayAdapter.add(new ChatMessage(false, next));
@@ -131,19 +130,6 @@ public class ChatBubbleActivity extends ActionBarActivity {
 
                 }
             }
-          /*  for (int i = 0; i < chat.length(); i++) {
-                if (chat.charAt(i) != '\n') {
-                    next = next + chat.charAt(i);
-                } else {
-
-                }
-            }*/
-
-            //chatArrayAdapter.add(new ChatMessage(side, chat));
-            //if(inGroup)
-         /*   }else
-                setUpMap();*/
-
             updateHandler.postDelayed(update, 1000);
         }
     };
@@ -156,7 +142,6 @@ public class ChatBubbleActivity extends ActionBarActivity {
         new AddToChatClient(number, number, text);
         currIndex++;
         chatText.setText("");
-        side = !side;
         return true;
     }
 

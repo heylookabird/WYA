@@ -1,5 +1,9 @@
 package com.example.agcostfu.wya;
+/*
+Helper class to help manage location data.
 
+
+ */
 public class Location {
     private int _id;
     private double _lat;

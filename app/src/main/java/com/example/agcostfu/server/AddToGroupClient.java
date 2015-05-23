@@ -1,5 +1,8 @@
 package com.example.agcostfu.server;
-
+/*
+* Client to add a new User to a Group to the server.
+*
+ */
 public class AddToGroupClient extends Client{
 
 	String t, name;
@@ -19,6 +22,6 @@ public class AddToGroupClient extends Client{
 
 	@Override
 	public String getRequest(){
-		return "addToGroup , " + parentNum + " , " + t + " , " + name;
+		return "addToGroup ," + parentNum + "," + t + "," + name;
 	}//			command			adders #			new guys #	new guys name
 }
