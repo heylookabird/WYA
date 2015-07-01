@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
-        AIzaSyDlThyE_9riMLt24un2QwhZoWrU5Q7lqoo
+        <!--Enter your Google Maps API Key here -->
     </string>
 
 </resources>
